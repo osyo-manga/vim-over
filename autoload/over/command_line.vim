@@ -30,13 +30,105 @@ function! over#command_line#start(prompt, input)
 endfunction
 
 
-let s:command_line = ""
+function! s:clamp(x, max, min)
+	return min([max([a:x, a:max]), a:min])
+endfunction
+
+
+function! s:string_with_pos(...)
+	let default = get(a:, 1, "")
+	let self = {}
+	
+	function! self.set(item)
+		return type(a:item) == type("") ? self.set_str(a:item)
+\			 : type(a:item) == type(0)  ? self.set_pos(a:item)
+\			 : self
+	endfunction
+
+	function! self.str()
+		return join(self.list, "")
+	endfunction
+
+	function! self.set_pos(pos)
+		let self.col = s:clamp(a:pos, 0, self.length())
+		return self
+	endfunction
+
+	function! self.backward()
+		return self.col > 0 ? join(self.list[ : self.col-1], '') : ""
+	endfunction
+
+	function! self.forward()
+		return join(self.list[self.col+1 : ], '')
+	endfunction
+
+	function! self.pos_word()
+		return get(self.list, self.col, "")
+	endfunction
+
+	function! self.set_str(str)
+		let self.list = split(a:str, '\zs')
+		let self.col  = strchars(a:str)
+		return self
+	endfunction
+
+	function! self.pos()
+		return self.col
+	endfunction
+
+	function! self.input(str)
+		call extend(self.list, split(a:str, '\zs'), self.col)
+		let self.col += len(split(a:str, '\zs'))
+		return self
+	endfunction
+
+	function! self.length()
+		return len(self.list)
+	endfunction
+
+	function! self.next()
+		return self.set_pos(self.col + 1)
+	endfunction
+
+	function! self.prev()
+		return self.set_pos(self.col - 1)
+	endfunction
+
+	function! self.remove(index)
+		if a:index < 0 || self.length() <= a:index
+			return self
+		endif
+		unlet self.list[a:index]
+		if a:index < self.col
+			call self.set(self.col - 1)
+		endif
+		return self
+	endfunction
+
+	function! self.remove_pos()
+		return self.remove(self.col)
+	endfunction
+
+	function! self.remove_prev()
+		return self.remove(self.col - 1)
+	endfunction
+
+	function! self.remove_next()
+		return self.remove(self.col + 1)
+	endfunction
+
+	call self.set(default)
+	return self
+endfunction
+
+
+let s:command_line = s:string_with_pos("")
 function! over#command_line#getline()
-	return s:command_line
+	return s:command_line.str()
 endfunction
 
 function! over#command_line#setline(line)
-	let s:command_line = a:line
+	call s:command_line.set(a:line)
 endfunction
 
 function! over#command_line#char()
@@ -44,9 +136,18 @@ function! over#command_line#char()
 endfunction
 
 
-function! s:echo_cmdline(line)
+function! s:echo_cmdline(prompt, pstr)
 	redraw
-	echo a:line
+	echon a:prompt . a:pstr.backward()
+	if empty(a:pstr.pos_word())
+		echohl OverCommandLineCursor
+		echon  ' '
+	else
+		echohl OverCommandLineCursorInsert
+		echon a:pstr.pos_word()
+	endif
+	echohl NONE
+	echon a:pstr.forward()
 endfunction
 
 
@@ -57,33 +158,44 @@ endfunction
 
 function! s:main(prompt, input)
 	call s:doautocmd_user("OverCmdLineEnter")
-	let s:flag = 0
-	let input = a:input
-	call s:echo_cmdline(a:prompt . input)
+	let s:command_line = s:string_with_pos(a:input)
+" 	let input = s:string_with_pos(a:input)
+	call s:echo_cmdline(a:prompt, s:command_line)
 	let s:char = s:getchar()
 	call s:doautocmd_user("OverCmdLineCharPre")
 	try
 		while s:char != "\<Esc>"
 			if s:char == "\<CR>"
 				call s:doautocmd_user("OverCmdLineExecutePre")
-				execute input
-				call histadd("cmd", input)
+				execute over#command_line#getline()
+				call histadd("cmd", over#command_line#getline())
 				call s:doautocmd_user("OverCmdLineExecute")
 				return
 			elseif s:char == "\<BS>" || s:char == "\<C-h>"
-				let input = join(split(input, '\zs')[ : -2], '')
+				call s:command_line.remove_prev()
 			elseif s:char == "\<C-w>"
-				let input = matchstr(input, '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
+				let backward = matchstr(s:command_line.backward(), '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
+				call s:command_line.set(backward . s:command_line.pos_word() . s:command_line.forward())
+				call s:command_line.set(strchars(backward))
 			elseif s:char == "\<C-v>"
-				let input .= @"
+				call s:command_line.s:command_line(@")
+			elseif s:char == "\<Right>" || s:char == "\<C-f>"
+				call s:command_line.next()
+			elseif s:char == "\<Left>" || s:char == "\<C-b>"
+				call s:command_line.prev()
+			elseif s:char == "\<Del>"
+				call s:command_line.remove_pos()
+			elseif s:char == "\<End>"
+				call s:command_line.set(s:command_line.length())
+			elseif s:char == "\<Home>"
+				call s:command_line.set(0)
 			else
-				let input .= s:char
+				call s:command_line.input(s:char)
 			endif
 
-			let s:command_line = input
 			call s:doautocmd_user("OverCmdLineChar")
 
-			call s:echo_cmdline(a:prompt . input)
+			call s:echo_cmdline(a:prompt, s:command_line)
 			let s:char = s:getchar()
 			call s:doautocmd_user("OverCmdLineCharPre")
 		endwhile
@@ -92,6 +204,8 @@ function! s:main(prompt, input)
 		endif
 		call s:doautocmd_user("OverCmdLineCancel")
 	finally
+		redraw
+		echo ""
 		call s:doautocmd_user("OverCmdLineLeave")
 	endtry
 endfunction
@@ -99,11 +213,25 @@ endfunction
 
 
 function! s:init()
+	let s:flag = 0
 	let s:old_pos = getpos(".")
 	unlet! s:matchid_pattern
 	unlet! s:matchid_string
 	let s:old_scrolloff = &scrolloff
 	let &scrolloff = 0
+
+	redir => cursor
+	silent highlight Cursor
+	redir END
+	let s:old_hi_cursor = matchstr(cursor, 'xxx \zs.*')
+	highlight Cursor NONE
+
+	if !hlexists("OverCommandLineCursor")
+		execute "highlight OverCommandLineCursor " . s:old_hi_cursor
+	endif
+	if !hlexists("OverCommandLineCursorInsert")
+		execute "highlight OverCommandLineCursorInsert " . s:old_hi_cursor . " term=underline gui=underline"
+	endif
 endfunction
 
 
@@ -118,6 +246,7 @@ function! s:finish()
 	endif
 	call setpos(".", s:old_pos)
 	let &scrolloff = s:old_scrolloff
+	execute ":highlight Cursor " . s:old_hi_cursor
 endfunction
 
 
@@ -160,13 +289,13 @@ function! s:substitute_preview(line)
 		return
 	endif
 
-	let s:matchid_pattern = matchadd("Search", pattern, 2)
+	let s:matchid_pattern = matchadd("Search", pattern, 1)
 	if empty(string)
 		let s:flag = 0
 		return
 	endif
 
-	let s:matchid_string = matchadd("Error", pattern . string, 1)
+	let s:matchid_string = matchadd("Error", pattern . '\zs' . string . '\ze', 2)
 
 	let range = (empty(range) || range ==# "%") ? printf("%d,%d", line("w0"), line("w$")) : range
 	silent execute range . 's/\(' . pattern . '\)/\1' .  string . "/g"
