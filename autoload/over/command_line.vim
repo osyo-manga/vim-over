@@ -186,7 +186,7 @@ function! s:main(prompt, input)
 				call s:command_line.next()
 			elseif s:char == "\<Left>" || s:char == "\<C-b>"
 				call s:command_line.prev()
-			elseif s:char == "\<Del>"
+			elseif s:char == "\<Del>" || s:char == "\<C-d>"
 				call s:command_line.remove_pos()
 			elseif s:char == "\<Home>" || s:char == "\<C-a>"
 				call s:command_line.set(0)
