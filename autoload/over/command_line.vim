@@ -269,6 +269,20 @@ function! s:undo()
 endfunction
 
 
+function! s:silent_substitute(range, pattern, string, flags)
+	try
+		let old_search_pattern = @/
+		silent execute printf('%ss/%s/%s/%s', a:range, a:pattern, a:string, a:flags)
+		call histdel("search", -1)
+		return 1
+	catch
+		return 0
+	finally
+		let @/ = old_search_pattern
+	endtry
+endfunction
+
+
 function! s:substitute_preview(line)
 	call s:undo()
 
@@ -301,15 +315,7 @@ function! s:substitute_preview(line)
 	let s:matchid_string = matchadd("Error", pattern . '\zs' . string . '\ze', 2)
 
 	let range = (empty(range) || range ==# "%") ? printf("%d,%d", line("w0"), line("w$")) : range
-	try
-		let old_search_pattern = @/
-		silent execute range . 's/\(' . pattern . '\)/\1' .  string . "/g"
-		call histdel("search", -1)
-		let s:flag = 1
-	catch
-	finally
-		let @/ = old_search_pattern
-	endtry
+	let s:flag = s:silent_substitute(range, '\(' . pattern . '\)', '\1' . string, 'g')
 endfunction
 
 
