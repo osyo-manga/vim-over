@@ -301,8 +301,15 @@ function! s:substitute_preview(line)
 	let s:matchid_string = matchadd("Error", pattern . '\zs' . string . '\ze', 2)
 
 	let range = (empty(range) || range ==# "%") ? printf("%d,%d", line("w0"), line("w$")) : range
-	silent execute range . 's/\(' . pattern . '\)/\1' .  string . "/g"
-	let s:flag = 1
+	try
+		let old_search_pattern = @/
+		silent execute range . 's/\(' . pattern . '\)/\1' .  string . "/g"
+		call histdel("search", -1)
+		let s:flag = 1
+	catch
+	finally
+		let @/ = old_search_pattern
+	endtry
 endfunction
 
 
