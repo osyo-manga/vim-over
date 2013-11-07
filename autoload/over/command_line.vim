@@ -181,7 +181,7 @@ function! s:main(prompt, input)
 				call s:command_line.set(backward . s:command_line.pos_word() . s:command_line.forward())
 				call s:command_line.set(strchars(backward))
 			elseif s:char == "\<C-v>"
-				call s:command_line.s:command_line(@")
+				call s:command_line.input(@")
 			elseif s:char == "\<Right>" || s:char == "\<C-f>"
 				call s:command_line.next()
 			elseif s:char == "\<Left>" || s:char == "\<C-b>"
