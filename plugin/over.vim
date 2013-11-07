@@ -10,7 +10,7 @@ set cpo&vim
 
 let g:over_enable_auto_nohlsearch = get(g:, "over_enable_auto_nohlsearch", 1)
 let g:over_enable_cmd_window = get(g:, "over_enable_cmd_window", 1)
-let g:over_command_line_prompt = get(g:, "g:over_command_line_prompt", "> ")
+let g:over_command_line_prompt = get(g:, "over_command_line_prompt", "> ")
 
 
 augroup plugin-over
@@ -18,6 +18,7 @@ augroup plugin-over
 	autocmd CmdwinEnter * if g:over_enable_cmd_window | call over#setup() | endif
 	autocmd CmdwinLeave * if g:over_enable_cmd_window | call over#unsetup() | endif
 augroup END
+
 
 command! -range
 \	OverCommandLine
