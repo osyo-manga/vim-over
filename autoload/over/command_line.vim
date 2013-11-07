@@ -167,9 +167,12 @@ function! s:main(prompt, input)
 		while s:char != "\<Esc>"
 			if s:char == "\<CR>"
 				call s:doautocmd_user("OverCmdLineExecutePre")
-				execute over#command_line#getline()
-				call histadd("cmd", over#command_line#getline())
-				call s:doautocmd_user("OverCmdLineExecute")
+				try
+					execute over#command_line#getline()
+				finally
+					call histadd("cmd", over#command_line#getline())
+					call s:doautocmd_user("OverCmdLineExecute")
+				endtry
 				return
 			elseif s:char == "\<BS>" || s:char == "\<C-h>"
 				call s:command_line.remove_prev()
@@ -185,10 +188,10 @@ function! s:main(prompt, input)
 				call s:command_line.prev()
 			elseif s:char == "\<Del>"
 				call s:command_line.remove_pos()
-			elseif s:char == "\<End>"
-				call s:command_line.set(s:command_line.length())
-			elseif s:char == "\<Home>"
+			elseif s:char == "\<Home>" || s:char == "\<C-a>"
 				call s:command_line.set(0)
+			elseif s:char == "\<End>" || s:char == "\<C-e>"
+				call s:command_line.set(s:command_line.length())
 			else
 				call s:command_line.input(s:char)
 			endif
