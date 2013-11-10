@@ -312,7 +312,7 @@ function! s:substitute_preview(line)
 	let range = (empty(range) || range ==# "%") ? printf("%d,%d", line("w0"), line("w$")) : range
 	let s:undo_flag = s:silent_substitute(range, '\(' . pattern . '\)', '\1' . string, 'g')
 
-	silent! call add(s:matchlist, matchadd("Error", pattern . '\zs' . string . '\ze', 2))
+	silent! call add(s:matchlist, matchadd("Error", '\(' . pattern . '\)\zs' . string . '\ze', 2))
 endfunction
 
 
