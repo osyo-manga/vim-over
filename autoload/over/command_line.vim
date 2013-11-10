@@ -181,7 +181,7 @@ function! s:main(prompt, input)
 				call s:command_line.set(backward . s:command_line.pos_word() . s:command_line.forward())
 				call s:command_line.set(strchars(backward))
 			elseif s:char == "\<C-v>"
-				call s:command_line.input(@")
+				call s:command_line.input(@*)
 			elseif s:char == "\<Right>" || s:char == "\<C-f>"
 				call s:command_line.next()
 			elseif s:char == "\<Left>" || s:char == "\<C-b>"
@@ -202,7 +202,7 @@ function! s:main(prompt, input)
 			let s:char = s:getchar()
 			call s:doautocmd_user("OverCmdLineCharPre")
 		endwhile
-		if s:flag
+		if s:undo_flag
 			call s:silent_undo()
 		endif
 		call s:doautocmd_user("OverCmdLineCancel")
@@ -216,7 +216,7 @@ endfunction
 
 
 function! s:init()
-	let s:flag = 0
+	let s:undo_flag = 0
 	let s:old_pos = getpos(".")
 	unlet! s:matchid_pattern
 	unlet! s:matchid_string
@@ -239,17 +239,18 @@ endfunction
 
 
 function! s:finish()
-	if exists("s:matchid_pattern")
-		call matchdelete(s:matchid_pattern)
-		unlet s:matchid_pattern
-	endif
-	if exists("s:matchid_string")
-		call matchdelete(s:matchid_string)
-		unlet s:matchid_string
-	endif
 	call setpos(".", s:old_pos)
 	let &scrolloff = s:old_scrolloff
 	execute ":highlight Cursor " . s:old_hi_cursor
+
+	if exists("s:matchid_pattern") && s:matchid_pattern != -1
+		call matchdelete(s:matchid_pattern)
+		unlet s:matchid_pattern
+	endif
+	if exists("s:matchid_string") && s:matchid_string != -1
+		call matchdelete(s:matchid_string)
+		unlet s:matchid_string
+	endif
 endfunction
 
 
@@ -263,9 +264,20 @@ endfunction
 
 
 function! s:undo()
-	if s:flag
+	if s:undo_flag
 		call s:silent_undo()
 	endif
+endfunction
+
+
+let s:matchlist = []
+function! s:reset_match()
+	for id in s:matchlist
+		if id != -1
+			call matchdelete(id)
+		endif
+	endfor
+	let s:matchlist = []
 endfunction
 
 
@@ -285,37 +297,29 @@ endfunction
 
 function! s:substitute_preview(line)
 	call s:undo()
+	let s:undo_flag = 0
 
-	if exists("s:matchid_pattern")
-		call matchdelete(s:matchid_pattern)
-		unlet! s:matchid_pattern
-	endif
-
-	if exists("s:matchid_string")
-		call matchdelete(s:matchid_string)
-		unlet! s:matchid_string
-	endif
+	call s:reset_match()
 
 	let result = over#parse_substitute(a:line)
 	if empty(result)
 		return
 	endif
+
 	let [range, pattern, string, flags] = result
 	if empty(pattern)
-		let s:flag = 0
 		return
 	endif
 
-	let s:matchid_pattern = matchadd("Search", pattern, 1)
+	silent! call add(s:matchlist, matchadd("Search", pattern, 1))
 	if empty(string)
-		let s:flag = 0
 		return
 	endif
-
-	let s:matchid_string = matchadd("Error", pattern . '\zs' . string . '\ze', 2)
 
 	let range = (empty(range) || range ==# "%") ? printf("%d,%d", line("w0"), line("w$")) : range
-	let s:flag = s:silent_substitute(range, '\(' . pattern . '\)', '\1' . string, 'g')
+	let s:undo_flag = s:silent_substitute(range, '\(' . pattern . '\)', '\1' . string, 'g')
+
+	silent! call add(s:matchlist, matchadd("Error", pattern . '\zs' . string . '\ze', 2))
 endfunction
 
 
