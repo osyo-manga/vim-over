@@ -243,14 +243,7 @@ function! s:finish()
 	let &scrolloff = s:old_scrolloff
 	execute ":highlight Cursor " . s:old_hi_cursor
 
-	if exists("s:matchid_pattern") && s:matchid_pattern != -1
-		call matchdelete(s:matchid_pattern)
-		unlet s:matchid_pattern
-	endif
-	if exists("s:matchid_string") && s:matchid_string != -1
-		call matchdelete(s:matchid_string)
-		unlet s:matchid_string
-	endif
+	call s:reset_match()
 endfunction
 
 
