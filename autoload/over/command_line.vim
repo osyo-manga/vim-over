@@ -135,6 +135,10 @@ function! over#command_line#char()
 	return s:char
 endfunction
 
+function! over#command_line#setchar(char)
+	let s:input = a:char
+endfunction
+
 
 function! s:echo_cmdline(prompt, pstr)
 	redraw
@@ -162,6 +166,7 @@ function! s:main(prompt, input)
 " 	let input = s:string_with_pos(a:input)
 	call s:echo_cmdline(a:prompt, s:command_line)
 	let s:char = s:getchar()
+	let s:input = s:char
 	call s:doautocmd_user("OverCmdLineCharPre")
 	try
 		while s:char != "\<Esc>"
@@ -199,13 +204,14 @@ function! s:main(prompt, input)
 			elseif s:char == "\<End>" || s:char == "\<C-e>"
 				call s:command_line.set(s:command_line.length())
 			else
-				call s:command_line.input(s:char)
+				call s:command_line.input(s:input)
 			endif
 
 			call s:doautocmd_user("OverCmdLineChar")
 
 			call s:echo_cmdline(a:prompt, s:command_line)
 			let s:char = s:getchar()
+			let s:input = s:char
 			call s:doautocmd_user("OverCmdLineCharPre")
 		endwhile
 		call s:doautocmd_user("OverCmdLineCancel")
@@ -218,6 +224,7 @@ endfunction
 
 
 function! s:init()
+	let s:input = ""
 	if hlexists("Cursor")
 		redir => cursor
 		silent highlight Cursor
@@ -245,6 +252,7 @@ endfunction
 
 
 call over#command_line#substitute#load()
+" call over#command_line#backspace#load()
 
 
 augroup over-cmdline
