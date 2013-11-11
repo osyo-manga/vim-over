@@ -191,6 +191,9 @@ function! s:main(prompt, input)
 				let backward = matchstr(s:command_line.backward(), '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
 				call s:command_line.set(backward . s:command_line.pos_word() . s:command_line.forward())
 				call s:command_line.set(strchars(backward))
+			elseif s:char == "\<C-u>"
+				call s:command_line.set(s:command_line.pos_word() . s:command_line.forward())
+				call s:command_line.set(0)
 			elseif s:char == "\<C-v>"
 				call s:command_line.input(@*)
 			elseif s:char == "\<Right>" || s:char == "\<C-f>"
