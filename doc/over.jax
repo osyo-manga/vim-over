@@ -65,6 +65,20 @@ Default: >
 <
 
 
+------------------------------------------------------------------------------
+over のコマンドラインのハイライト		*over-command_line-highlight*
 
+|over.vim| で使用される |:highlight| です。
+
+OverCommandLineCursor				*OverCommandLineCursor*
+	カーソル位置のハイライトです。
+	コマンドラインの末尾で使用されます。
+	デフォルトでは |hl-Cursor| が使用されます。
+
+OverCommandLineCursorInsert			*OverCommandLineCursorInsert*
+	カーソル位置のハイライトです。
+	コマンドラインの文字上で使用されます。
+	デフォルトでは |hl-Cursor| を使用し、|underline| が設定されます。
+	
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
