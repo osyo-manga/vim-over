@@ -167,6 +167,8 @@ function! s:main(prompt, input)
 		while s:char != "\<Esc>"
 			if s:char == "\<CR>"
 				call s:doautocmd_user("OverCmdLineExecutePre")
+				redraw
+				echo ""
 				try
 					execute over#command_line#getline()
 				catch
@@ -207,6 +209,8 @@ function! s:main(prompt, input)
 			call s:doautocmd_user("OverCmdLineCharPre")
 		endwhile
 		call s:doautocmd_user("OverCmdLineCancel")
+		redraw
+		echo ""
 	finally
 		call s:doautocmd_user("OverCmdLineLeave")
 	endtry
@@ -214,23 +218,29 @@ endfunction
 
 
 function! s:init()
-	redir => cursor
-	silent highlight Cursor
-	redir END
-	let s:old_hi_cursor = matchstr(cursor, 'xxx \zs.*')
-	highlight Cursor NONE
-
+	if hlexists("Cursor")
+		redir => cursor
+		silent highlight Cursor
+		redir END
+		let s:old_hi_cursor = substitute(matchstr(cursor, 'xxx \zs.*'), '[ \t\n]\+', ' ', 'g')
+		highlight Cursor NONE
+	else
+		let s:old_hi_cursor = "cterm=reverse"
+	endif
 	if !hlexists("OverCommandLineCursor")
 		execute "highlight OverCommandLineCursor " . s:old_hi_cursor
 	endif
 	if !hlexists("OverCommandLineCursorInsert")
 		execute "highlight OverCommandLineCursorInsert " . s:old_hi_cursor . " term=underline gui=underline"
 	endif
+	let s:old_t_ve = &t_ve
+	set t_ve=
 endfunction
 
 
 function! s:finish()
 	execute ":highlight Cursor " . s:old_hi_cursor
+	let &t_ve = s:old_t_ve
 endfunction
 
 
