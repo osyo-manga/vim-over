@@ -72,6 +72,7 @@ function! s:substitute_preview(line)
 	if empty(result)
 		return
 	endif
+	nohlsearch
 
 	let [range, pattern, string, flags] = result
 	if empty(pattern)
@@ -86,7 +87,7 @@ function! s:substitute_preview(line)
 	let range = (range ==# "%") ? printf("%d,%d", line("w0"), line("w$")) : range
 	let s:undo_flag = s:silent_substitute(range, '\(' . pattern . '\)', '\1' . string, 'g')
 
-	silent! call add(s:matchlist, matchadd("Error", '\(' . pattern . '\)\zs' . string . '\ze', 2))
+	silent! call add(s:matchlist, matchadd("Error", pattern . '\zs' . string . '\ze', 2))
 endfunction
 
 
