@@ -1,5 +1,17 @@
 *over.txt*	|:s| のパターンをハイライトするプラグイン
 
+==============================================================================
+目次						*over-contents*
+
+概要				|over-introduction|
+インターフェース		|over-interface|
+  コマンド			  |over-commands|
+設定				|over-setting|
+  over の変数			  |over-variables|
+  over のコマンドラインのハイライト	  |over-command_line-highlight|
+  over のコマンドラインのキーマッピング	  |over-command_line-key-mappings|
+
+
 
 ==============================================================================
 概要						*over-introduction*
@@ -23,20 +35,21 @@
 	|over.vim| 独自のコマンドラインを使用して |:substitute| を行います。
 	このコマンドラインを使用すると {pattern} のハイライトを行い、{string}
 	のプレビューも行われます。
-	ただし、独自のコマンドラインなので以下のキーマッピングのみ使用できま
+	ただし、独自のコマンドラインなので特定のキーマッピングのみ使用できま
 	す。
-	キー			処理~
-	<CR>			コマンドの実行
-	<Esc>			コマンドラインから抜ける
-	<C-v>			レジスタ " の貼り付け
-	<BS> or <C-h>		1文字削除
-	<C-w>			カーソルの前にある単語を削除
-	<Right> or <C-f>	カーソルを右に移動
-	<Left> or <C-b>		カーソルを左に移動
-	<Del> or <C-d>		カーソル上の文字を削除
-	<Home> or <C-a>		カーソルを先頭へ移動
-	<End> of <C-e>		カーソルを末尾へ移動
+	使用できるキーマッピングは |over-command_line-key-mappings| を参照して
+	下さい。
 
+OverCommandLineMap {lhs} {rhs}			*:OverCommandLineMap*
+	コマンドラインで使用するキーを設定します。
+	{lhs} のキーが {rhs} に割り当てられます。
+	ここで設定する事ができるキーは1文字、もしくは修飾キー+1文字のみ割り当
+	てることができます。
+	この設定は |g:over_command_line_key_mappings| に反映されます。
+Example: >
+	OverCommandLineMap <A-b> <C-b>
+	OverCommandLineMap <A-f> <C-f>
+<
 
 ==============================================================================
 設定						*over-setting*
@@ -64,6 +77,19 @@ Default: >
 	let g:over_command_line_prompt = "> "
 <
 
+g:over_command_line_key_mappings		*g:over_command_line_key_mappings*
+	コマンドラインで使用されるキーマッピングを設定します。
+	ここで設定する事ができるキーは1文字、もしくは修飾キー+1文字のみ割り当
+	てることができます。
+Example: >
+	" <C-l> を <C-f> に
+	" <C-h> を <C-b> に割り当てる
+	let g:over_command_line_key_mappings = {
+	\	"\<C-l>" : "\<C-f>",
+	\	"\<C-h>" : "\<C-b>",
+	\}
+<
+
 
 ------------------------------------------------------------------------------
 over のコマンドラインのハイライト		*over-command_line-highlight*
@@ -80,5 +106,29 @@ OverCommandLineCursorInsert			*OverCommandLineCursorInsert*
 	コマンドラインの文字上で使用されます。
 	デフォルトでは |hl-Cursor| を使用し、|underline| が設定されます。
 	
+
+
+------------------------------------------------------------------------------
+over のコマンドラインのキーマッピング	*over-command_line-key-mappings*
+
+コマンドラインで使用できるキーマッピングです。
+このキーマッピングは |g:over_command_line_key_map| で変更することが可能で
+す。
+
+キー			処理~
+-----------		-------------------------------
+<CR>			コマンドの実行
+<Esc>			コマンドラインから抜ける
+<C-v>			レジスタ " の貼り付け
+<BS> or <C-h>		1文字削除
+<C-w>			カーソルの前にある単語を削除
+<Right> or <C-f>	カーソルを右に移動
+<Left> or <C-b>		カーソルを左に移動
+<Del> or <C-d>		カーソル上の文字を削除
+<Home> or <C-a>		カーソルを先頭へ移動
+<End> of <C-e>		カーソルを末尾へ移動
+
+
+
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl

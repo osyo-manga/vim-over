@@ -16,7 +16,7 @@ function! s:parse_substitute(word)
 	let flags        = '%(\2([&cegiInp#lr]*))?'
 	let parse_pattern
 \		= very_magic
-\		. '^'
+\		. '^:*'
 \		. range
 \		. command
 \		. first_slash
@@ -33,6 +33,21 @@ function! s:parse_substitute(word)
 	unlet result[1]
 	return result
 endfunction
+
+
+
+
+" base code
+" https://github.com/thinca/vim-ambicmd/blob/78fa88c5647071e73a3d21e5f575ed408f68aaaf/autoload/ambicmd.vim#L26
+function! over#parse_range(string)
+	let search_pattern = '\v/[^/]*\\@<!%(\\\\)*/|\?[^?]*\\@<!%(\\\\)*\?'
+	let line_specifier =
+	\   '\v%(\d+|[.$]|''\S|\\[/?&])?%([+-]\d*|' . search_pattern . ')*'
+	let range_pattern = '\v%((\%|' . line_specifier . ')' .
+	\              '%([;,](' . line_specifier . '))*)'
+	return matchlist(a:string, range_pattern)
+endfunction
+
 
 
 function! s:search_highlight(line)

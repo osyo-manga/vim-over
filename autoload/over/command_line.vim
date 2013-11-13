@@ -170,7 +170,8 @@ function! s:main(prompt, input)
 	call s:doautocmd_user("OverCmdLineCharPre")
 	try
 		while s:char != "\<Esc>"
-			if s:char == "\<CR>"
+			let keymap = over#command_line#keymap(s:char)
+			if keymap == "\<CR>"
 				call s:doautocmd_user("OverCmdLineExecutePre")
 				redraw
 				echo ""
@@ -185,26 +186,26 @@ function! s:main(prompt, input)
 					call s:doautocmd_user("OverCmdLineExecute")
 				endtry
 				return
-			elseif s:char == "\<BS>" || s:char == "\<C-h>"
+			elseif keymap == "\<C-h>"
 				call s:command_line.remove_prev()
-			elseif s:char == "\<C-w>"
+			elseif keymap == "\<C-w>"
 				let backward = matchstr(s:command_line.backward(), '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
 				call s:command_line.set(backward . s:command_line.pos_word() . s:command_line.forward())
 				call s:command_line.set(strchars(backward))
-			elseif s:char == "\<C-u>"
+			elseif keymap == "\<C-u>"
 				call s:command_line.set(s:command_line.pos_word() . s:command_line.forward())
 				call s:command_line.set(0)
-			elseif s:char == "\<C-v>"
+			elseif keymap == "\<C-v>"
 				call s:command_line.input(@*)
-			elseif s:char == "\<Right>" || s:char == "\<C-f>"
+			elseif keymap == "\<C-f>"
 				call s:command_line.next()
-			elseif s:char == "\<Left>" || s:char == "\<C-b>"
+			elseif keymap == "\<C-b>"
 				call s:command_line.prev()
-			elseif s:char == "\<Del>" || s:char == "\<C-d>"
+			elseif keymap == "\<C-d>"
 				call s:command_line.remove_pos()
-			elseif s:char == "\<Home>" || s:char == "\<C-a>"
+			elseif keymap == "\<C-a>"
 				call s:command_line.set(0)
-			elseif s:char == "\<End>" || s:char == "\<C-e>"
+			elseif keymap == "\<C-e>"
 				call s:command_line.set(s:command_line.length())
 			else
 				call s:command_line.input(s:input)
@@ -263,6 +264,22 @@ augroup over-cmdline
 	autocmd User OverCmdLineEnter call s:init()
 	autocmd User OverCmdLineLeave call s:finish()
 augroup END
+
+
+
+let s:default_key_mapping = {
+\	"\<Right>" : "\<C-f>",
+\	"\<Left>"  : "\<C-b>",
+\	"\<BS>"    : "\<C-h>",
+\	"\<Del>"   : "\<C-d>",
+\	"\<Home>"  : "\<C-a>",
+\	"\<End>"   : "\<C-e>",
+\}
+
+
+function! over#command_line#keymap(key)
+	return get(extend(deepcopy(s:default_key_mapping), g:over_command_line_key_mappings), a:key, a:key)
+endfunction
 
 
 
