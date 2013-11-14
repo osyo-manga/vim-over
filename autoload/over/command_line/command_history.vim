@@ -1,0 +1,46 @@
+scriptencoding utf-8
+let s:save_cpo = &cpo
+set cpo&vim
+
+function! over#command_line#command_history#load()
+	" load
+endfunction
+
+
+function! s:command_histories()
+	return map(range(1, &history), 'histget(":", v:val * -1)')
+endfunction
+
+
+let s:cmdhist = []
+let s:count = 0
+
+function! s:main()
+	let key = over#command_line#keymap(over#command_line#char())
+	if key != "\<C-n>" && key != "\<C-p>"
+		let s:cmdhist = []
+		let s:count = 0
+		return
+	else
+		if s:count == 0 && empty(s:cmdhist)
+			let cmdline = '^' . over#command_line#getline()
+			let s:cmdhist = filter(s:command_histories(), 'v:val =~ cmdline')
+		endif
+	endif
+	call over#command_line#setchar("")
+	if key != "\<C-p>"
+		let s:count = max([s:count - 1, 0])
+	endif
+	if key != "\<C-n>"
+		let s:count = min([s:count + 1, len(s:cmdhist)])
+	endif
+	call over#command_line#setline(get(s:cmdhist, s:count, over#command_line#getline()))
+endfunction
+
+augroup over-cmdline-substitute
+	autocmd!
+	autocmd User OverCmdLineCharPre call s:main()
+augroup END
+
+let &cpo = s:save_cpo
+unlet s:save_cpo

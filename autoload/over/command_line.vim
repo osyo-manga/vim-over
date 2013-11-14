@@ -166,11 +166,11 @@ function! s:main(prompt, input)
 " 	let input = s:string_with_pos(a:input)
 	call s:echo_cmdline(a:prompt, s:command_line)
 	let s:char = s:getchar()
+	let keymap = over#command_line#keymap(s:char)
 	let s:input = s:char
 	call s:doautocmd_user("OverCmdLineCharPre")
 	try
 		while s:char != "\<Esc>"
-			let keymap = over#command_line#keymap(s:char)
 			if keymap == "\<CR>"
 				call s:doautocmd_user("OverCmdLineExecutePre")
 				redraw
@@ -215,6 +215,7 @@ function! s:main(prompt, input)
 
 			call s:echo_cmdline(a:prompt, s:command_line)
 			let s:char = s:getchar()
+			let keymap = over#command_line#keymap(s:char)
 			let s:input = s:char
 			call s:doautocmd_user("OverCmdLineCharPre")
 		endwhile
@@ -257,6 +258,7 @@ endfunction
 
 call over#command_line#substitute#load()
 " call over#command_line#backspace#load()
+call over#command_line#command_history#load()
 
 
 augroup over-cmdline
@@ -270,6 +272,8 @@ augroup END
 let s:default_key_mapping = {
 \	"\<Right>" : "\<C-f>",
 \	"\<Left>"  : "\<C-b>",
+\	"\<Up>"    : "\<C-p>",
+\	"\<Down>"  : "\<C-n>",
 \	"\<BS>"    : "\<C-h>",
 \	"\<Del>"   : "\<C-d>",
 \	"\<Home>"  : "\<C-a>",
