@@ -39,7 +39,7 @@ function! s:as_keymapping(key)
 endfunction
 
 command! -nargs=*
-\	OverCommandLineMap
+\	OverCommandLineNoremap
 \	call call("s:key_mapping", map([<f-args>], "s:as_keymapping(v:val)"))
 
 

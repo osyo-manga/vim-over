@@ -40,15 +40,16 @@
 	使用できるキーマッピングは |over-command_line-key-mappings| を参照して
 	下さい。
 
-OverCommandLineMap {lhs} {rhs}			*:OverCommandLineMap*
+:OverCommandLineNoremap {lhs} {rhs}		*:OverCommandLineNoremap*
 	コマンドラインで使用するキーを設定します。
 	{lhs} のキーが {rhs} に割り当てられます。
 	ここで設定する事ができるキーは1文字、もしくは修飾キー+1文字のみ割り当
 	てることができます。
+	また、再マップは行われません。
 	この設定は |g:over_command_line_key_mappings| に反映されます。
 Example: >
-	OverCommandLineMap <A-b> <C-b>
-	OverCommandLineMap <A-f> <C-f>
+	OverCommandLineNoremap <A-b> <C-b>
+	OverCommandLineNoremap <A-f> <C-f>
 <
 
 ==============================================================================
@@ -126,7 +127,9 @@ over のコマンドラインのキーマッピング	*over-command_line-key-map
 <Left> or <C-b>		カーソルを左に移動
 <Del> or <C-d>		カーソル上の文字を削除
 <Home> or <C-a>		カーソルを先頭へ移動
-<End> of <C-e>		カーソルを末尾へ移動
+<End> or <C-e>		カーソルを末尾へ移動
+<Up> or <C-p>		1つ前のコマンド履歴を挿入
+<Down> or <C-n>		1つ後のコマンド履歴を挿入
 
 
 
