@@ -37,7 +37,7 @@ function! s:main()
 	call over#command_line#setline(get(s:cmdhist, s:count, over#command_line#getline()))
 endfunction
 
-augroup over-cmdline-substitute
+augroup over-cmdline-command_history
 	autocmd!
 	autocmd User OverCmdLineCharPre call s:main()
 augroup END
