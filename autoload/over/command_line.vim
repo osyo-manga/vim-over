@@ -230,14 +230,16 @@ endfunction
 
 function! s:init()
 	let s:input = ""
+	let s:old_hi_cursor = "cterm=reverse"
 	if hlexists("Cursor")
 		redir => cursor
 		silent highlight Cursor
 		redir END
-		let s:old_hi_cursor = substitute(matchstr(cursor, 'xxx \zs.*'), '[ \t\n]\+', ' ', 'g')
+		let hl = substitute(matchstr(cursor, 'xxx \zs.*'), '[ \t\n]\+\|cleared', ' ', 'g')
+		if !empty(substitute(hl, '\s', '', 'g'))
+			let s:old_hi_cursor = hl
+		endif
 		highlight Cursor NONE
-	else
-		let s:old_hi_cursor = "cterm=reverse"
 	endif
 	if !hlexists("OverCommandLineCursor")
 		execute "highlight OverCommandLineCursor " . s:old_hi_cursor
@@ -251,7 +253,7 @@ endfunction
 
 
 function! s:finish()
-	execute ":highlight Cursor " . s:old_hi_cursor
+	execute "highlight Cursor " . s:old_hi_cursor
 	let &t_ve = s:old_t_ve
 endfunction
 
