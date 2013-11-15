@@ -139,9 +139,35 @@ function! over#command_line#setchar(char)
 	let s:input = a:char
 endfunction
 
+function! over#command_line#getpos()
+	return s:command_line.pos()
+endfunction
 
-function! over#command_line#is_input(key)
-	return over#command_line#keymap(over#command_line#char()) == a:key
+function! over#command_line#setpos(pos)
+	return s:command_line.set_pos(a:pos)
+endfunction
+
+
+function! over#command_line#wait_keyinpu_on(key)
+	let s:wait_key = a:key
+endfunction
+
+function! over#command_line#wait_keyinpu_off(key)
+	if s:wait_key == a:key
+		let s:wait_key = ""
+	endif
+" 	let s:wait_key = a:key
+endfunction
+
+function! over#command_line#get_wait_keyinput()
+	return s:wait_key
+endfunction
+
+
+function! over#command_line#is_input(key, ...)
+	let prekey = get(a:, 1, "")
+	return s:wait_key == prekey
+\		&& over#command_line#keymap(over#command_line#char()) == a:key
 endfunction
 
 
@@ -165,6 +191,7 @@ function! s:getchar()
 	return type(char) == type(0) ? nr2char(char) : char
 endfunction
 
+
 function! s:main(prompt, input)
 	call s:doautocmd_user("OverCmdLineEnter")
 	let s:command_line = s:string_with_pos(a:input)
@@ -176,7 +203,7 @@ function! s:main(prompt, input)
 	call s:doautocmd_user("OverCmdLineCharPre")
 	try
 		while s:char != "\<Esc>"
-			if keymap == "\<CR>"
+			if over#command_line#is_input("\<CR>")
 				call s:doautocmd_user("OverCmdLineExecutePre")
 				redraw
 				echo ""
@@ -190,26 +217,26 @@ function! s:main(prompt, input)
 					call s:doautocmd_user("OverCmdLineExecute")
 				endtry
 				return
-			elseif keymap == "\<C-h>"
+			elseif over#command_line#is_input("\<C-h>")
 				call s:command_line.remove_prev()
-			elseif keymap == "\<C-w>"
+			elseif over#command_line#is_input("\<C-w>")
 				let backward = matchstr(s:command_line.backward(), '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
 				call s:command_line.set(backward . s:command_line.pos_word() . s:command_line.forward())
 				call s:command_line.set(strchars(backward))
-			elseif keymap == "\<C-u>"
+			elseif over#command_line#is_input("\<C-u>")
 				call s:command_line.set(s:command_line.pos_word() . s:command_line.forward())
 				call s:command_line.set(0)
-			elseif keymap == "\<C-v>"
+			elseif over#command_line#is_input("\<C-v>")
 				call s:command_line.input(@*)
-			elseif keymap == "\<C-f>"
+			elseif over#command_line#is_input("\<C-f>")
 				call s:command_line.next()
-			elseif keymap == "\<C-b>"
+			elseif over#command_line#is_input("\<C-b>")
 				call s:command_line.prev()
-			elseif keymap == "\<C-d>"
+			elseif over#command_line#is_input("\<C-d>")
 				call s:command_line.remove_pos()
-			elseif keymap == "\<C-a>"
+			elseif over#command_line#is_input("\<C-a>")
 				call s:command_line.set(0)
-			elseif keymap == "\<C-e>"
+			elseif over#command_line#is_input("\<C-e>")
 				call s:command_line.set(s:command_line.length())
 			else
 				call s:command_line.input(s:input)
@@ -234,6 +261,7 @@ endfunction
 
 
 function! s:init()
+	let s:wait_key = ""
 	let s:input = ""
 	let s:old_hi_cursor = "cterm=reverse"
 	if hlexists("Cursor")
