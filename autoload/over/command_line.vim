@@ -140,6 +140,11 @@ function! over#command_line#setchar(char)
 endfunction
 
 
+function! over#command_line#is_input(key)
+	return over#command_line#keymap(over#command_line#char()) == a:key
+endfunction
+
+
 function! s:echo_cmdline(prompt, pstr)
 	redraw
 	echon a:prompt . a:pstr.backward()
@@ -259,6 +264,7 @@ endfunction
 call over#command_line#substitute#load()
 " call over#command_line#backspace#load()
 call over#command_line#command_history#load()
+" call over#command_line#insert_register#load()
 
 
 augroup over-cmdline
