@@ -16,8 +16,7 @@ let s:cmdhist = []
 let s:count = 0
 
 function! s:main()
-	let key = over#command_line#keymap(over#command_line#char())
-	if key != "\<C-n>" && key != "\<C-p>"
+	if !over#command_line#is_input("\<C-p>") && !over#command_line#is_input("\<C-n>")
 		let s:cmdhist = []
 		let s:count = 0
 		return
@@ -28,10 +27,10 @@ function! s:main()
 		endif
 	endif
 	call over#command_line#setchar("")
-	if key != "\<C-p>"
+	if over#command_line#is_input("\<C-n>")
 		let s:count = max([s:count - 1, 0])
 	endif
-	if key != "\<C-n>"
+	if over#command_line#is_input("\<C-p>")
 		let s:count = min([s:count + 1, len(s:cmdhist)])
 	endif
 	call over#command_line#setline(get(s:cmdhist, s:count, over#command_line#getline()))
