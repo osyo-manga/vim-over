@@ -294,7 +294,7 @@ endfunction
 call over#command_line#substitute#load()
 " call over#command_line#backspace#load()
 call over#command_line#command_history#load()
-" call over#command_line#insert_register#load()
+call over#command_line#insert_register#load()
 
 
 augroup over-cmdline
