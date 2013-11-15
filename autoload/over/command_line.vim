@@ -187,7 +187,6 @@ function! s:main(prompt, input)
 					echo matchstr(v:exception, 'Vim\((\w*)\)\?:\zs.*\ze')
 					echohl None
 				finally
-					call histadd("cmd", over#command_line#getline())
 					call s:doautocmd_user("OverCmdLineExecute")
 				endtry
 				return
@@ -228,6 +227,7 @@ function! s:main(prompt, input)
 		redraw
 		echo ""
 	finally
+		call histadd("cmd", over#command_line#getline())
 		call s:doautocmd_user("OverCmdLineLeave")
 	endtry
 endfunction
