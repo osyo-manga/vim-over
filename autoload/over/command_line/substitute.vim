@@ -12,7 +12,24 @@ function! s:init()
 	let s:old_pos = getpos(".")
 	let s:old_scrolloff = &scrolloff
 	let &scrolloff = 0
+	let s:old_conceallevel = &l:conceallevel
+	let &l:conceallevel = 3
+	let s:old_concealcursor = &l:concealcursor
+	let &l:concealcursor = "nvic"
+	let s:old_search = @/
 
+	syntax region OverCmdLineSubstitutePattern start="`ocp`" end="`/ocp`"
+\		contains=OverCmdLineSubstituteHiddenPatBegin,OverCmdLineSubstituteHiddenPatEnd keepend
+	syntax match OverCmdLineSubstituteHiddenPatBegin '`ocp`' contained conceal
+	syntax match OverCmdLineSubstituteHiddenPatEnd   '`/ocp`' contained conceal
+
+	syntax region OverCmdLineSubstituteString start="`ocs`" end="`/ocs`"
+\		contains=OverCmdLineSubstituteHiddenStrBegin,OverCmdLineSubstituteHiddenStrEnd,OverCmdLineSubstitutePattern keepend
+	syntax match OverCmdLineSubstituteHiddenStrBegin '`ocs`'  contained conceal
+	syntax match OverCmdLineSubstituteHiddenStrEnd   '`/ocs`' contained conceal
+
+	highlight link OverCmdLineSubstitutePattern Search
+	highlight link OverCmdLineSubstituteString  Error
 endfunction
 
 
@@ -20,7 +37,14 @@ function! s:finish()
 	call s:reset_match()
 	call setpos(".", s:old_pos)
 	let &scrolloff = s:old_scrolloff
-	
+	let &l:conceallevel = s:old_conceallevel
+	let &l:concealcursor = s:old_concealcursor
+	highlight link OverCmdLineSubstitute NONE
+	highlight link OverCmdLineSubstitutePattern NONE
+	highlight link OverCmdLineSubstituteString  NONE
+	if empty(@/)
+		let @/ = s:old_search
+	endif
 endfunction
 
 
@@ -82,15 +106,19 @@ function! s:substitute_preview(line)
 		return
 	endif
 
-	silent! call add(s:matchlist, matchadd("Search", pattern, 1))
 	if empty(string)
+		silent! call add(s:matchlist, matchadd("Search", (&ignorecase ? '\c' : '') . pattern, 1))
 		return
 	endif
 
 	let range = (range ==# "%") ? printf("%d,%d", line("w0"), line("w$")) : range
-	let s:undo_flag = s:silent_substitute(range, pattern, '\0' . string, 'g')
-
-	silent! call add(s:matchlist, matchadd("Error", (&ignorecase ? '\c' : '') . pattern . '\zs' . string . '\ze', 2))
+	if string =~ '^\\=.\+'
+		let string = substitute(string, '^\\=\ze.\+', '\\="`ocp`" . submatch(0) . "`\\/ocp``ocs`" . (', "") . ') . "`\/ocs`"'
+	else
+		let string = '`ocp`\0`\/ocp``ocs`' . string . '`\/ocs`'
+	endif
+	let s:undo_flag = s:silent_substitute(range, pattern, string, 'g')
+	let @/ = ""
 endfunction
 
 
