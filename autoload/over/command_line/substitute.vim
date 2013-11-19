@@ -16,20 +16,10 @@ function! s:init()
 	let &l:conceallevel = 3
 	let s:old_concealcursor = &l:concealcursor
 	let &l:concealcursor = "nvic"
-	let s:old_search = @/
 
-	syntax region OverCmdLineSubstitutePattern start="`ocp`" end="`/ocp`"
-\		contains=OverCmdLineSubstituteHiddenPatBegin,OverCmdLineSubstituteHiddenPatEnd keepend
-	syntax match OverCmdLineSubstituteHiddenPatBegin '`ocp`' contained conceal
-	syntax match OverCmdLineSubstituteHiddenPatEnd   '`/ocp`' contained conceal
-
-	syntax region OverCmdLineSubstituteString start="`ocs`" end="`/ocs`"
-\		contains=OverCmdLineSubstituteHiddenStrBegin,OverCmdLineSubstituteHiddenStrEnd,OverCmdLineSubstitutePattern keepend
-	syntax match OverCmdLineSubstituteHiddenStrBegin '`ocs`'  contained conceal
-	syntax match OverCmdLineSubstituteHiddenStrEnd   '`/ocs`' contained conceal
-
-	highlight link OverCmdLineSubstitutePattern Search
-	highlight link OverCmdLineSubstituteString  Error
+	syntax match OverCmdLineSubstituteHiddenBegin  '`os`' conceal containedin=ALL
+	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
+	syntax match OverCmdLineSubstituteHiddenEnd    '`oe`' conceal containedin=ALL
 endfunction
 
 
@@ -42,9 +32,6 @@ function! s:finish()
 	highlight link OverCmdLineSubstitute NONE
 	highlight link OverCmdLineSubstitutePattern NONE
 	highlight link OverCmdLineSubstituteString  NONE
-	if empty(@/)
-		let @/ = s:old_search
-	endif
 endfunction
 
 
@@ -113,12 +100,14 @@ function! s:substitute_preview(line)
 
 	let range = (range ==# "%") ? printf("%d,%d", line("w0"), line("w$")) : range
 	if string =~ '^\\=.\+'
-		let string = substitute(string, '^\\=\ze.\+', '\\="`ocp`" . submatch(0) . "`\\/ocp``ocs`" . (', "") . ') . "`\/ocs`"'
+		let string = substitute(string, '^\\=\ze.\+', '\\="`os`" . submatch(0) . "`om`" . (', "") . ') . "`oe`"'
 	else
-		let string = '`ocp`\0`\/ocp``ocs`' . string . '`\/ocs`'
+		let string = '`os`\0`om`' . string . '`oe`'
 	endif
 	let s:undo_flag = s:silent_substitute(range, pattern, string, 'g')
-	let @/ = ""
+
+	silent! call add(s:matchlist, matchadd("Search", '`os`\zs\_.\{-}\ze`om`', 1))
+	silent! call add(s:matchlist, matchadd("Error",  '`om`\zs\_.\{-}\ze`oe`', 1))
 endfunction
 
 
