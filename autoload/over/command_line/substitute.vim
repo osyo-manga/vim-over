@@ -68,8 +68,11 @@ function! s:silent_substitute(range, pattern, string, flags)
 		silent execute printf('%ss/%s/%s/%s', a:range, a:pattern, a:string, a:flags)
 		call histdel("search", -1)
 		return 1
+	catch /^Vim\%((\a\+)\)\=:E15/
+		call s:silent_undo()
+	catch /^Vim\%((\a\+)\)\=:E121/
+		call s:silent_undo()
 	catch
-		return 0
 	finally
 		call setpos(".", old_pos)
 	endtry
