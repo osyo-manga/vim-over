@@ -170,6 +170,20 @@ function! over#command_line#is_input(key, ...)
 \		&& over#command_line#keymap(over#command_line#char()) == a:key
 endfunction
 
+function! over#command_line#insert(word, pos)
+	call s:command_line.set(a:pos)
+	call s:command_line.input(a:word)
+endfunction
+
+function! over#command_line#forward()
+	return s:command_line.forward()
+endfunction
+
+function! over#command_line#backward()
+	return s:command_line.backward()
+endfunction
+
+
 
 function! s:echo_cmdline(prompt, pstr)
 	redraw
@@ -191,6 +205,15 @@ function! s:getchar()
 	return type(char) == type(0) ? nr2char(char) : char
 endfunction
 
+function! over#command_line#redraw()
+	redraw
+	echo ""
+endfunction
+
+let s:plugin_root = expand('<sfile>:p:h:h') . '/tools/'
+function! s:func()
+	call system(s:plugin_root . "/shell.sh")
+endfunction
 
 function! s:main(prompt, input)
 	call s:doautocmd_user("OverCmdLineEnter")
@@ -205,8 +228,6 @@ function! s:main(prompt, input)
 		while s:char != "\<Esc>"
 			if over#command_line#is_input("\<CR>")
 				call s:doautocmd_user("OverCmdLineExecutePre")
-				redraw
-				echo ""
 				try
 					execute over#command_line#getline()
 				catch
@@ -251,8 +272,7 @@ function! s:main(prompt, input)
 			call s:doautocmd_user("OverCmdLineCharPre")
 		endwhile
 		call s:doautocmd_user("OverCmdLineCancel")
-		redraw
-		echo ""
+		call over#command_line#redraw()
 	finally
 		call histadd("cmd", over#command_line#getline())
 		call s:doautocmd_user("OverCmdLineLeave")
@@ -260,9 +280,18 @@ function! s:main(prompt, input)
 endfunction
 
 
-function! s:init()
-	let s:wait_key = ""
-	let s:input = ""
+function! over#command_line#hl_cursor_on()
+	if exists("s:old_hi_cursor")
+		execute "highlight Cursor " . s:old_hi_cursor
+		unlet s:old_hi_cursor
+	endif
+endfunction
+
+
+function! over#command_line#hl_cursor_off()
+	if exists("s:old_hi_cursor")
+		return s:old_hi_cursor
+	endif
 	let s:old_hi_cursor = "cterm=reverse"
 	if hlexists("Cursor")
 		redir => cursor
@@ -274,11 +303,30 @@ function! s:init()
 		endif
 		highlight Cursor NONE
 	endif
+	return s:old_hi_cursor
+endfunction
+
+
+function! s:init()
+	let s:wait_key = ""
+	let s:input = ""
+" 	let s:old_hi_cursor = "cterm=reverse"
+" 	if hlexists("Cursor")
+" 		redir => cursor
+" 		silent highlight Cursor
+" 		redir END
+" 		let hl = substitute(matchstr(cursor, 'xxx \zs.*'), '[ \t\n]\+\|cleared', ' ', 'g')
+" 		if !empty(substitute(hl, '\s', '', 'g'))
+" 			let s:old_hi_cursor = hl
+" 		endif
+" 		highlight Cursor NONE
+" 	endif
+	let hl_cursor = over#command_line#hl_cursor_off()
 	if !hlexists("OverCommandLineCursor")
-		execute "highlight OverCommandLineCursor " . s:old_hi_cursor
+		execute "highlight OverCommandLineCursor " . hl_cursor
 	endif
 	if !hlexists("OverCommandLineCursorInsert")
-		execute "highlight OverCommandLineCursorInsert " . s:old_hi_cursor . " term=underline gui=underline"
+		execute "highlight OverCommandLineCursorInsert " . hl_cursor . " term=underline gui=underline"
 	endif
 	let s:old_t_ve = &t_ve
 	set t_ve=
@@ -286,7 +334,8 @@ endfunction
 
 
 function! s:finish()
-	execute "highlight Cursor " . s:old_hi_cursor
+" 	execute "highlight Cursor " . s:old_hi_cursor
+	call over#command_line#hl_cursor_on()
 	let &t_ve = s:old_t_ve
 endfunction
 
@@ -295,6 +344,7 @@ call over#command_line#substitute#load()
 " call over#command_line#backspace#load()
 call over#command_line#command_history#load()
 call over#command_line#insert_register#load()
+" call over#command_line#complete#load()
 
 
 augroup over-cmdline
