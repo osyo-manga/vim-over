@@ -26,7 +26,13 @@ endfunction
 
 
 function! over#command_line#start(prompt, input)
-	call s:main(a:prompt, a:input)
+	if exists("*strchars") && has("conceal")
+		call s:main(a:prompt, a:input)
+	else
+		echohl ErrorMsg
+		echo "Vim 7.3 or above."
+		echohl NONE
+	endif
 endfunction
 
 
