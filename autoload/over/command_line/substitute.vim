@@ -118,6 +118,28 @@ function! s:substitute_preview(line)
 endfunction
 
 
+function! s:on_charpre()
+	if over#command_line#is_input("\<Plug>(over-cmdline-substitute-jump-string)")
+		let result = over#parse_substitute(over#command_line#getline())
+		if empty(result)
+			return
+		endif
+		let [range, pattern, string, flags] = result
+		call over#command_line#setpos(strchars(range . pattern) + 3)
+		call over#command_line#setchar("")
+	endif
+	if over#command_line#is_input("\<Plug>(over-cmdline-substitute-jump-pattern)")
+		let result = over#parse_substitute(over#command_line#getline())
+		if empty(result)
+			return
+		endif
+		let [range, pattern, string, flags] = result
+		call over#command_line#setpos(strchars(range ) + 2)
+		call over#command_line#setchar("")
+	endif
+endfunction
+
+
 augroup over-cmdline-substitute
 	autocmd!
 	autocmd User OverCmdLineEnter call s:init()
@@ -125,6 +147,7 @@ augroup over-cmdline-substitute
 	autocmd User OverCmdLineExecutePre call s:undo()
 	autocmd User OverCmdLineCancel call s:undo()
 	autocmd User OverCmdLineChar call s:substitute_preview(over#command_line#getline())
+	autocmd user OverCmdLineCharPre call s:on_charpre()
 augroup END
 
 

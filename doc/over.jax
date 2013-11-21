@@ -142,6 +142,20 @@ over のコマンドラインのキーマッピング	*over-command_line-key-map
 	プを行っているので、ユーザ側でマップを行う際はそれ以外のキーを使用
 	して下さい。
 
+また、以下は特殊なマッピングです。
+使用する場合は |OverCommandLineNoremap| で任意のキーに割り当てて下さい。
+
+キー						処理~
+<Plug>(over-cmdline-substitute-jump-pattern)	|:substitute| の {pattenr} へ
+						カーソルを移動
+<Plug>(over-cmdline-substitute-jump-string)	|:substitute| の {string} へ
+						カーソルを移動
+
+Example: >
+    OverCommandLineNoremap <A-s> <Plug>(over-cmdline-substitute-jump-string)
+    OverCommandLineNoremap <A-p> <Plug>(over-cmdline-substitute-jump-pattern)
+<
+
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
