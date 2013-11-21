@@ -46,11 +46,11 @@ function! s:main()
 		elseif key == '='
 			call over#command_line#setchar(s:input())
 		elseif key == "\<C-w>"
-			call over#command_line#setchar(expand("<cword>"))
+			call over#command_line#setchar(s:cword)
 		elseif key == "\<C-a>"
-			call over#command_line#setchar(expand("<cWORD>>"))
+			call over#command_line#setchar(s:cWORD)
 		elseif key == "\<C-f>"
-			call over#command_line#setchar(expand("<cfile>"))
+			call over#command_line#setchar(s:cfile)
 		elseif key == "\<C-r>"
 			call over#command_line#setchar('"')
 		endif
@@ -67,8 +67,15 @@ function! s:on_OverCmdLineChar()
 endfunction
 
 
+function! s:save_op()
+	let s:cword = expand("<cword>")
+	let s:cWORD = expand("cWORD")
+	let s:cfile = expand("<cfile>")
+endfunction
+
 augroup over-cmdline-insert_register
 	autocmd!
+	autocmd User OverCmdLineEnter call s:save_op()
 	autocmd User OverCmdLineCharPre call s:main()
 	autocmd User OverCmdLineChar call s:on_OverCmdLineChar()
 augroup END
