@@ -13,9 +13,7 @@ function! s:init()
 	let s:old_scrolloff = &scrolloff
 	let &scrolloff = 0
 	let s:old_conceallevel = &l:conceallevel
-	let &l:conceallevel = 3
 	let s:old_concealcursor = &l:concealcursor
-	let &l:concealcursor = "nvic"
 
 	syntax match OverCmdLineSubstituteHiddenBegin  '`os`' conceal containedin=ALL
 	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
@@ -113,6 +111,8 @@ function! s:substitute_preview(line)
 	endif
 	let s:undo_flag = s:silent_substitute(range, pattern, string, 'g')
 
+	let &l:concealcursor = "nvic"
+	let &l:conceallevel = 3
 	silent! call add(s:matchlist, matchadd("Search", '`os`\zs\_.\{-}\ze`om`', 1))
 	silent! call add(s:matchlist, matchadd("Error",  '`om`\zs\_.\{-}\ze`oe`', 1))
 endfunction
