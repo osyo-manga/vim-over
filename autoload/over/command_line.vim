@@ -31,6 +31,7 @@ function! over#command_line#start(prompt, input)
 	else
 		echohl ErrorMsg
 		echo "Vim 7.3 or above."
+		echo "Need strchars() and +conceal."
 		echohl NONE
 	endif
 endfunction
