@@ -21,11 +21,11 @@ augroup plugin-over
 augroup END
 
 
-command! -range
+command! -range -nargs=*
 \	OverCommandLine
 \	call over#command_line(
 \		g:over_command_line_prompt,
-\		<line1> != <line2> ? printf("%d,%d", <line1>, <line2>) : ""
+\		<line1> != <line2> ? printf("%d,%d%s", <line1>, <line2>, <q-args>) : <q-args>
 \)
 
 

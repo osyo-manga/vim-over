@@ -34,7 +34,7 @@ Requirements:
 ------------------------------------------------------------------------------
 コマンド					*over-commands*
 
-:OverCommandLine				*:OverCommandLine*
+:OverCommandLine [{input}]			*:OverCommandLine*
 	|over.vim| 独自のコマンドラインを使用して |:substitute| を行います。
 	このコマンドラインを使用すると {pattern} のハイライトを行い、{string}
 	のプレビューも行われます。
@@ -42,6 +42,7 @@ Requirements:
 	す。
 	使用できるキーマッピングは |over-command_line-key-mappings| を参照して
 	下さい。
+	{input} を渡すとその文字列が入力された状態で開始されます。
 
 :OverCommandLineNoremap {lhs} {rhs}		*:OverCommandLineNoremap*
 	コマンドラインで使用するキーを設定します。
