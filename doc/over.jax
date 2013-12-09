@@ -159,6 +159,31 @@ Example: >
     OverCommandLineNoremap <A-p> <Plug>(over-cmdline-substitute-jump-pattern)
 <
 
+NOTE: 次のキーは |OverCommandLineNoremap| にて再マップで定義されています。
+ユーザ側で |OverCommandLineNoremap| でマップする場合はもう片方のキーを使用して
+下さい。
+
+<Right>
+<Left>
+<Up>
+<Down>
+<BS>
+<Del>
+<Home>
+<End>
+
+Example: >
+	" NG
+	OverCommandLineNoremap <A-l> <Right>
+	
+	" OK
+	OverCommandLineNoremap <A-l> <C-f>
+<
+
+
+
+
+
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
