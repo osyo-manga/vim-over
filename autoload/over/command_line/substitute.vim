@@ -18,6 +18,9 @@ function! s:init()
 	syntax match OverCmdLineSubstituteHiddenBegin  '`os`' conceal containedin=ALL
 	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
 	syntax match OverCmdLineSubstituteHiddenEnd    '`oe`' conceal containedin=ALL
+	
+	silent! undojoin
+	let s:buffer_text = getline(1, "$")
 endfunction
 
 
@@ -30,6 +33,10 @@ function! s:finish()
 	highlight link OverCmdLineSubstitute NONE
 	highlight link OverCmdLineSubstitutePattern NONE
 	highlight link OverCmdLineSubstituteString  NONE
+
+	silent! undojoin
+	call setline(1, s:buffer_text)
+	silent exec 'normal!' "i\<C-g>u\<ESC>"
 endfunction
 
 
@@ -143,8 +150,9 @@ endfunction
 augroup over-cmdline-substitute
 	autocmd!
 	autocmd User OverCmdLineEnter call s:init()
-	autocmd User OverCmdLineLeave call s:finish()
-	autocmd User OverCmdLineExecutePre call s:undo()
+	autocmd User OverCmdLineExecutePre call s:finish()
+" 	autocmd User OverCmdLineLeave call s:finish()
+" 	autocmd User OverCmdLineExecutePre call s:undo()
 	autocmd User OverCmdLineCancel call s:undo()
 	autocmd User OverCmdLineChar call s:substitute_preview(over#command_line#getline())
 	autocmd user OverCmdLineCharPre call s:on_charpre()
