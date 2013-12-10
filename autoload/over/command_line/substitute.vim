@@ -34,9 +34,17 @@ function! s:finish()
 	highlight link OverCmdLineSubstitutePattern NONE
 	highlight link OverCmdLineSubstituteString  NONE
 
-	silent! undojoin
-	call setline(1, s:buffer_text)
-	silent exec 'normal!' "i\<C-g>u\<ESC>"
+	call s:undojoin()
+endfunction
+
+
+function! s:undojoin()
+	if exists("s:buffer_text")
+		silent! undojoin
+		call setline(1, s:buffer_text)
+		silent exec 'normal!' "i\<C-g>u\<ESC>"
+		unlet s:buffer_text
+	endif
 endfunction
 
 
@@ -150,9 +158,9 @@ endfunction
 augroup over-cmdline-substitute
 	autocmd!
 	autocmd User OverCmdLineEnter call s:init()
-	autocmd User OverCmdLineExecutePre call s:finish()
-" 	autocmd User OverCmdLineLeave call s:finish()
-" 	autocmd User OverCmdLineExecutePre call s:undo()
+" 	autocmd User OverCmdLineExecutePre call s:finish()
+	autocmd User OverCmdLineLeave call s:finish()
+	autocmd User OverCmdLineExecutePre call s:undojoin()
 	autocmd User OverCmdLineCancel call s:undo()
 	autocmd User OverCmdLineChar call s:substitute_preview(over#command_line#getline())
 	autocmd user OverCmdLineCharPre call s:on_charpre()
