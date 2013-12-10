@@ -19,8 +19,8 @@ function! s:init()
 	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
 	syntax match OverCmdLineSubstituteHiddenEnd    '`oe`' conceal containedin=ALL
 	
-	silent! undojoin
 	let s:buffer_text = getline(1, "$")
+	silent! undojoin
 endfunction
 
 
@@ -33,8 +33,6 @@ function! s:finish()
 	highlight link OverCmdLineSubstitute NONE
 	highlight link OverCmdLineSubstitutePattern NONE
 	highlight link OverCmdLineSubstituteString  NONE
-
-	call s:undojoin()
 endfunction
 
 
@@ -49,11 +47,8 @@ endfunction
 
 
 function! s:silent_undo()
-	let pos = getpos(".")
-	redir => _
-	silent undo
-	redir END
-	call setpos(".", pos)
+	silent! undojoin
+	call setline(1, s:buffer_text)
 endfunction
 
 
@@ -83,9 +78,6 @@ function! s:silent_substitute(range, pattern, string, flags)
 		silent execute printf('%ss/%s/%s/%s', a:range, a:pattern, a:string, a:flags)
 		call histdel("search", -1)
 	catch /\v^Vim%(\(\a+\))=:(E121)|(E117)|(E110)|(E112)|(E113)|(E731)|(E475)|(E15)/
-		if check != b:changedtick
-			call s:silent_undo()
-		endif
 		return 0
 	catch
 	finally
@@ -97,8 +89,7 @@ endfunction
 
 
 function! s:substitute_preview(line)
-	call s:undo()
-	let s:undo_flag = 0
+	call s:silent_undo()
 
 	call s:reset_match()
 
@@ -161,7 +152,7 @@ augroup over-cmdline-substitute
 " 	autocmd User OverCmdLineExecutePre call s:finish()
 	autocmd User OverCmdLineLeave call s:finish()
 	autocmd User OverCmdLineExecutePre call s:undojoin()
-	autocmd User OverCmdLineCancel call s:undo()
+	autocmd User OverCmdLineCancel call s:undojoin()
 	autocmd User OverCmdLineChar call s:substitute_preview(over#command_line#getline())
 	autocmd user OverCmdLineCharPre call s:on_charpre()
 augroup END
