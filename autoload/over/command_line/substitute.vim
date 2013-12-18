@@ -14,6 +14,7 @@ function! s:init()
 	let &scrolloff = 0
 	let s:old_conceallevel = &l:conceallevel
 	let s:old_concealcursor = &l:concealcursor
+	let s:old_modified = &l:modified
 
 	syntax match OverCmdLineSubstituteHiddenBegin  '`os`' conceal containedin=ALL
 	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
@@ -30,6 +31,7 @@ function! s:finish()
 	let &scrolloff = s:old_scrolloff
 	let &l:conceallevel = s:old_conceallevel
 	let &l:concealcursor = s:old_concealcursor
+	let &l:modified = s:old_modified
 	highlight link OverCmdLineSubstitute NONE
 	highlight link OverCmdLineSubstitutePattern NONE
 	highlight link OverCmdLineSubstituteString  NONE

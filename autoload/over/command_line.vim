@@ -232,7 +232,7 @@ function! s:main(prompt, input)
 	let s:input = s:char
 	call s:doautocmd_user("OverCmdLineCharPre")
 	try
-		while s:char != "\<Esc>"
+		while !over#command_line#is_input("\<Esc>")
 			if over#command_line#is_input("\<CR>")
 				call s:doautocmd_user("OverCmdLineExecutePre")
 				try
@@ -317,17 +317,6 @@ endfunction
 function! s:init()
 	let s:wait_key = ""
 	let s:input = ""
-" 	let s:old_hi_cursor = "cterm=reverse"
-" 	if hlexists("Cursor")
-" 		redir => cursor
-" 		silent highlight Cursor
-" 		redir END
-" 		let hl = substitute(matchstr(cursor, 'xxx \zs.*'), '[ \t\n]\+\|cleared', ' ', 'g')
-" 		if !empty(substitute(hl, '\s', '', 'g'))
-" 			let s:old_hi_cursor = hl
-" 		endif
-" 		highlight Cursor NONE
-" 	endif
 	let hl_cursor = over#command_line#hl_cursor_off()
 	if !hlexists("OverCommandLineCursor")
 		execute "highlight OverCommandLineCursor " . hl_cursor
