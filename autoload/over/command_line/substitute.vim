@@ -8,6 +8,9 @@ endfunction
 
 
 function! s:init()
+	if &modifiable == 0
+		return
+	endif
 	let s:undo_flag = 0
 	let s:old_pos = getpos(".")
 	let s:old_scrolloff = &scrolloff
@@ -26,6 +29,9 @@ endfunction
 
 
 function! s:finish()
+	if &modifiable == 0
+		return
+	endif
 	call s:reset_match()
 	call setpos(".", s:old_pos)
 	let &scrolloff = s:old_scrolloff
@@ -49,6 +55,9 @@ endfunction
 
 
 function! s:silent_undo()
+	if !exists("s:buffer_text")
+		return
+	endif
 	silent! undojoin
 	call setline(1, s:buffer_text)
 endfunction
