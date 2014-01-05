@@ -24,7 +24,8 @@ function! s:init()
 	syntax match OverCmdLineSubstituteHiddenEnd    '`oe`' conceal containedin=ALL
 	
 	let s:buffer_text = getline(1, "$")
-	silent! undojoin
+	let s:undo_file = tempname()
+	execute "wundo" s:undo_file
 endfunction
 
 
@@ -46,10 +47,11 @@ endfunction
 
 function! s:undojoin()
 	if exists("s:buffer_text")
-		silent! undojoin
+\	&& exists("s:undo_file")
 		call setline(1, s:buffer_text)
-		silent exec 'normal!' "i\<C-g>u\<ESC>"
+		silent execute "rundo" s:undo_file
 		unlet s:buffer_text
+		unlet s:undo_file
 	endif
 endfunction
 
@@ -58,7 +60,6 @@ function! s:silent_undo()
 	if !exists("s:buffer_text")
 		return
 	endif
-	silent! undojoin
 	call setline(1, s:buffer_text)
 endfunction
 
