@@ -48,7 +48,7 @@ endfunction
 function! s:undojoin()
 	if exists("s:buffer_text")
 \	&& exists("s:undo_file")
-		call setline(1, s:buffer_text)
+		call s:undo()
 		if filereadable(s:undo_file)
 			silent execute "rundo" s:undo_file
 		endif
