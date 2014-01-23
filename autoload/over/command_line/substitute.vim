@@ -26,7 +26,6 @@ function! s:init()
 	let s:buffer_text = getline(1, "$")
 	let s:undo_file = tempname()
 	execute "wundo" s:undo_file
-	echom s:undo_file
 endfunction
 
 
