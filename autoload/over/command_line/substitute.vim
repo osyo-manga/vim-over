@@ -103,7 +103,7 @@ endfunction
 
 
 function! s:substitute_preview(line)
-	call s:silent_undo()
+	call s:undo()
 
 	call s:reset_match()
 
