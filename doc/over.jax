@@ -153,6 +153,8 @@ over のコマンドラインのキーマッピング	*over-command_line-key-map
 						カーソルを移動
 <Plug>(over-cmdline-substitute-jump-string)	|:substitute| の {string} へ
 						カーソルを移動
+<Plug>(over-cmdline-scroll-u)			|CTRL-u| 相当
+<Plug>(over-cmdline-scroll-d)			|CTRL-d| 相当
 
 Example: >
     OverCommandLineNoremap <A-s> <Plug>(over-cmdline-substitute-jump-string)
@@ -179,9 +181,6 @@ Example: >
 	" OK
 	OverCommandLineNoremap <A-l> <C-f>
 <
-
-
-
 
 
 

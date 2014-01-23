@@ -266,6 +266,12 @@ function! s:main(prompt, input)
 				call s:command_line.set(0)
 			elseif over#command_line#is_input("\<C-e>")
 				call s:command_line.set(s:command_line.length())
+			elseif over#command_line#is_input("\<Plug>(over-cmdline-scroll-d)")
+				execute "normal! \<C-d>"
+				redraw
+			elseif over#command_line#is_input("\<Plug>(over-cmdline-scroll-u)")
+				execute "normal! \<C-u>"
+				redraw
 			else
 				call s:command_line.input(s:input)
 			endif
