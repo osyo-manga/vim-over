@@ -23,7 +23,6 @@ function! s:init()
 	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
 	syntax match OverCmdLineSubstituteHiddenEnd    '`oe`' conceal containedin=ALL
 	
-	let s:buffer_text = getline(1, "$")
 	let s:undo_file = tempname()
 	execute "wundo" s:undo_file
 endfunction
@@ -46,23 +45,22 @@ endfunction
 
 
 function! s:undojoin()
-	if exists("s:buffer_text")
-\	&& exists("s:undo_file")
+	if exists("s:undo_file")
 		call s:undo()
 		if filereadable(s:undo_file)
 			silent execute "rundo" s:undo_file
 		endif
-		unlet s:buffer_text
 		unlet s:undo_file
 	endif
 endfunction
 
 
 function! s:silent_undo()
-	if !exists("s:buffer_text")
-		return
-	endif
-	call setline(1, s:buffer_text)
+	let pos = getpos(".")
+	redir => _
+	silent undo
+	redir END
+	call setpos(".", pos)
 endfunction
 
 
