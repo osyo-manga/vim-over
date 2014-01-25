@@ -67,6 +67,7 @@ endfunction
 function! s:undo()
 	if s:undo_flag
 		call s:silent_undo()
+		let s:undo_flag = 0
 	endif
 endfunction
 
