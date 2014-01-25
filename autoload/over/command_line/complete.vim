@@ -76,8 +76,10 @@ function! s:start()
 	let backward = over#command_line#backward()
 	let [pos, keyword] = s:parse_line(backward)
 
-	let complete = s:get_complete_words()
-	let s:complete_list = filter(complete, 'v:val =~ ''^''.keyword')
+	if !exists("s:complete")
+		let s:complete = s:get_complete_words()
+	endif
+	let s:complete_list = filter(copy(s:complete), 'v:val =~ ''^''.keyword')
 	if empty(s:complete_list)
 		return -1
 	endif
@@ -142,6 +144,7 @@ endfunction
 augroup over-cmdwindow-complete
 	autocmd!
 	autocmd User OverCmdLineCharPre call s:main()
+	autocmd User OverCmdLineLeave unlet! s:complete
 augroup END
 
 
