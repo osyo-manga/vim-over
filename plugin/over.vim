@@ -25,7 +25,7 @@ command! -range -nargs=*
 \	OverCommandLine
 \	call over#command_line(
 \		g:over_command_line_prompt,
-\		<line1> != <line2> ? printf("%d,%d%s", <line1>, <line2>, <q-args>) : <q-args>
+\		<line1> != <line2> ? printf("'<,'>%s", <q-args>) : <q-args>
 \)
 
 
