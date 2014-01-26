@@ -136,7 +136,10 @@ function! s:substitute_preview(line)
 
 	let range = (range ==# "%") ? printf("%d,%d", line("w0"), line("w$")) : range
 	if string =~ '^\\=.\+'
-		let string = substitute(string, '^\\=\ze.\+', '\\="`os`" . submatch(0) . "`om`" . (', "") . ') . "`oe`"'
+
+		" \="`os`" . submatch(0) . "`om`" . (submatch(0)) . "`oe`"
+		let hl_submatch = printf('\\="%s" . submatch(0) . "%s" . (', s:hl_mark_begin, s:hl_mark_center)
+		let string = substitute(string, '^\\=\ze.\+', hl_submatch, "") . ') . "' . s:hl_mark_end . '"'
 	else
 		let string = s:hl_mark_begin . '\0' . s:hl_mark_center . string . s:hl_mark_end
 	endif
