@@ -7,6 +7,11 @@ function! over#command_line#substitute#load()
 endfunction
 
 
+let s:hl_mark_begin = '`os`'
+let s:hl_mark_center = '`om`'
+let s:hl_mark_end   = '`oe`'
+
+
 function! s:init()
 	if &modifiable == 0
 		return
@@ -19,9 +24,13 @@ function! s:init()
 	let s:old_concealcursor = &l:concealcursor
 	let s:old_modified = &l:modified
 
-	syntax match OverCmdLineSubstituteHiddenBegin  '`os`' conceal containedin=ALL
-	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
-	syntax match OverCmdLineSubstituteHiddenEnd    '`oe`' conceal containedin=ALL
+	let hl_f = "syntax match %s '%s' conceal containedin=ALL"
+	execute printf(hl_f, "OverCmdLineSubstituteHiddenBegin", s:hl_mark_begin)
+	execute printf(hl_f, "OverCmdLineSubstituteHiddenCenter", s:hl_mark_center)
+	execute printf(hl_f, "OverCmdLineSubstituteHiddenEnd", s:hl_mark_end)
+" 	syntax match OverCmdLineSubstituteHiddenBegin  '`os`' conceal containedin=ALL
+" 	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
+" 	syntax match OverCmdLineSubstituteHiddenEnd    '`oe`' conceal containedin=ALL
 	
 	let s:undo_file = tempname()
 	execute "wundo" s:undo_file
@@ -91,6 +100,9 @@ function! s:silent_substitute(range, pattern, string, flags)
 		silent execute printf('%ss/%s/%s/%s', a:range, a:pattern, a:string, a:flags)
 		call histdel("search", -1)
 	catch /\v^Vim%(\(\a+\))=:(E121)|(E117)|(E110)|(E112)|(E113)|(E731)|(E475)|(E15)/
+		if check != b:changedtick
+			call s:silent_undo()
+		endif
 		return 0
 	catch
 	finally
@@ -126,14 +138,17 @@ function! s:substitute_preview(line)
 	if string =~ '^\\=.\+'
 		let string = substitute(string, '^\\=\ze.\+', '\\="`os`" . submatch(0) . "`om`" . (', "") . ') . "`oe`"'
 	else
-		let string = '`os`\0`om`' . string . '`oe`'
+		let string = s:hl_mark_begin . '\0' . s:hl_mark_center . string . s:hl_mark_end
 	endif
 	let s:undo_flag = s:silent_substitute(range, pattern, string, 'g')
 
 	let &l:concealcursor = "nvic"
 	let &l:conceallevel = 3
-	silent! call add(s:matchlist, matchadd("Search", '`os`\zs\_.\{-}\ze`om`', 1))
-	silent! call add(s:matchlist, matchadd("Error",  '`om`\zs\_.\{-}\ze`oe`', 1))
+
+	let search_pattern = s:hl_mark_begin  . '\zs\_.\{-}\ze' . s:hl_mark_center
+	let error_pattern  = s:hl_mark_center . '\zs\_.\{-}\ze' . s:hl_mark_end
+	silent! call add(s:matchlist, matchadd("Search", search_pattern, 1))
+	silent! call add(s:matchlist, matchadd("Error",  error_pattern, 1))
 endfunction
 
 
