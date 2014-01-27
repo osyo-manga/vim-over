@@ -96,7 +96,7 @@ Example: >
 <
 
 
-------------------------------------------------------------------------------
+==============================================================================
 over のコマンドラインのハイライト		*over-command_line-highlight*
 
 |over.vim| で使用される |:highlight| です。
@@ -113,7 +113,7 @@ OverCommandLineCursorInsert			*OverCommandLineCursorInsert*
 	
 
 
-------------------------------------------------------------------------------
+==============================================================================
 over のコマンドラインのキーマッピング	*over-command_line-key-mappings*
 
 コマンドラインで使用できるキーマッピングです。
@@ -186,6 +186,20 @@ Example: >
 	OverCommandLineNoremap <A-l> <C-f>
 <
 
+==============================================================================
+over のコマンドラインの autocmd			*over-command_line-autocmd*
+
+|:OverCommandLine| から発行される |autocmd| |User| です。
+
+名前			発生するとき~
+OverCmdLineEnter	コマンドラインが開始された時
+OverCmdLineLeave	コマンドラインが終了した時
+OverCmdLineExecutePre	コマンドが実行される直前
+OverCmdLineExecute	コマンドが実行された後
+OverCmdLineCharPre	いずれかのキーが入力された時
+			コマンドラインにキーが追加される前
+OverCmdLineChar		いずれかのキーが入力されてコマンドラインに追加された後
+OverCmdLineCancel	コマンドラインを実行しないで終了した時
 
 
 ==============================================================================
