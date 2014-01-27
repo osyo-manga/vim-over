@@ -231,6 +231,7 @@ function! s:main(prompt, input)
 			if over#command_line#is_input("\<CR>")
 				call s:doautocmd_user("OverCmdLineExecutePre")
 				try
+					call over#command_line#redraw()
 					execute over#command_line#getline()
 				catch
 					echohl ErrorMsg
@@ -241,6 +242,10 @@ function! s:main(prompt, input)
 				endtry
 				return
 			elseif over#command_line#is_input("\<C-h>")
+				if s:command_line.length() == 0
+					call over#command_line#redraw()
+					return
+				endif
 				call s:command_line.remove_prev()
 			elseif over#command_line#is_input("\<C-w>")
 				let backward = matchstr(s:command_line.backward(), '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
