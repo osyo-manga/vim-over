@@ -217,10 +217,6 @@ function! over#command_line#redraw()
 	echo ""
 endfunction
 
-let s:plugin_root = expand('<sfile>:p:h:h') . '/tools/'
-function! s:func()
-	call system(s:plugin_root . "/shell.sh")
-endfunction
 
 function! s:main(prompt, input)
 	call s:doautocmd_user("OverCmdLineEnter")
@@ -228,7 +224,6 @@ function! s:main(prompt, input)
 " 	let input = s:string_with_pos(a:input)
 	call s:echo_cmdline(a:prompt, s:command_line)
 	let s:char = s:getchar()
-	let keymap = over#command_line#keymap(s:char)
 	let s:input = s:char
 	call s:doautocmd_user("OverCmdLineCharPre")
 	try
@@ -286,7 +281,6 @@ function! s:main(prompt, input)
 
 			call s:echo_cmdline(a:prompt, s:command_line)
 			let s:char = s:getchar()
-			let keymap = over#command_line#keymap(s:char)
 			let s:input = s:char
 			call s:doautocmd_user("OverCmdLineCharPre")
 		endwhile
