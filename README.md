@@ -15,3 +15,12 @@
 
 ![test](https://f.cloud.github.com/assets/214488/1584401/89e13068-520b-11e3-8acb-de8a58538dbb.gif)
 
+
+##License
+
+[NYSL](http://www.kmonos.net/nysl/)
+
+[NYSL English](http://www.kmonos.net/nysl/index.en.html)
+
+
+
