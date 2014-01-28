@@ -17,7 +17,7 @@ function! s:init()
 		return
 	endif
 	let s:undo_flag = 0
-	let s:old_pos = getpos(".")
+" 	let s:old_pos = getpos(".")
 	let s:old_scrolloff = &scrolloff
 	let &scrolloff = 0
 	let s:old_conceallevel = &l:conceallevel
@@ -42,7 +42,7 @@ function! s:finish()
 		return
 	endif
 	call s:reset_match()
-	call setpos(".", s:old_pos)
+" 	call setpos(".", s:old_pos)
 	let &scrolloff = s:old_scrolloff
 	let &l:conceallevel = s:old_conceallevel
 	let &l:concealcursor = s:old_concealcursor
