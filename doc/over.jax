@@ -8,8 +8,9 @@
   コマンド			  |over-commands|
 設定				|over-setting|
   over の変数			  |over-variables|
-  over のコマンドラインのハイライト				  |over-command_line-highlight|
-  over のコマンドラインのキーマッピング				  |over-command_line-key-mappings|
+over のコマンドラインのハイライト	|over-command_line-highlight|
+over のコマンドラインのキーマッピング	|over-command_line-key-mappings|
+over のコマンドラインの autocmd |over-command_line-autocmd|
 
 
 ==============================================================================
@@ -82,7 +83,7 @@ Default: >
 	let g:over_command_line_prompt = "> "
 <
 
-g:over_command_line_key_mappings		*g:over_command_line_key_mappings*
+g:over_command_line_key_mappings	*g:over_command_line_key_mappings*
 	コマンドラインで使用されるキーマッピングを設定します。
 	ここで設定する事ができるキーは1文字、もしくは修飾キー+1文字のみ割り当
 	てることができます。
@@ -93,6 +94,19 @@ Example: >
 	\	"\<C-l>" : "\<C-f>",
 	\	"\<C-h>" : "\<C-b>",
 	\}
+<
+				*g:over#command_line#search#enable_incsearch*
+g:over#command_line#search#enable_incsearch
+	0 以外が設定されていれば :/ or :? 時にそのパータンをハイライトする。
+Default: >
+	let g:over#command_line#search#enable_incsearch = 1
+<
+				*g:over#command_line#search#enable_move_cursor*
+g:over#command_line#search#enable_move_cursor
+	0 以外が設定されていれば :/ or :? 時にそのパータンへカーソルを移動す
+	る。
+Default: >
+	let g:over#command_line#search#enable_move_cursor = 0
 <
 
 
