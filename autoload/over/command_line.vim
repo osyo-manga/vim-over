@@ -155,11 +155,11 @@ function! over#command_line#setpos(pos)
 endfunction
 
 
-function! over#command_line#wait_keyinpu_on(key)
+function! over#command_line#wait_keyinput_on(key)
 	let s:wait_key = a:key
 endfunction
 
-function! over#command_line#wait_keyinpu_off(key)
+function! over#command_line#wait_keyinput_off(key)
 	if s:wait_key == a:key
 		let s:wait_key = ""
 	endif

@@ -32,7 +32,7 @@ endfunction
 function! s:main()
 	if over#command_line#is_input("\<C-r>")
 		call over#command_line#setchar('"')
-		call over#command_line#wait_keyinpu_on("InsertRegister")
+		call over#command_line#wait_keyinput_on("InsertRegister")
 		let s:old_line = over#command_line#getline()
 		let s:old_pos  = over#command_line#getpos()
 		return
@@ -62,7 +62,7 @@ function! s:on_OverCmdLineChar()
 	if over#command_line#is_input("\<C-r>", "InsertRegister")
 		call over#command_line#setpos(over#command_line#getpos()-1)
 	else
-		call over#command_line#wait_keyinpu_off("InsertRegister")
+		call over#command_line#wait_keyinput_off("InsertRegister")
 	endif
 endfunction
 

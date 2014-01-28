@@ -114,7 +114,7 @@ function! s:main()
 			return
 		endif
 		call over#command_line#setchar('')
-		call over#command_line#wait_keyinpu_on("Completion")
+		call over#command_line#wait_keyinput_on("Completion")
 	elseif over#command_line#is_input("\<Tab>", "Completion")
 \		|| over#command_line#is_input("\<C-f>", "Completion")
 		call over#command_line#setchar('')
@@ -129,7 +129,7 @@ function! s:main()
 			let s:count = len(s:complete_list) - 1
 		endif
 	else
-		call over#command_line#wait_keyinpu_off("Completion")
+		call over#command_line#wait_keyinput_off("Completion")
 		call s:finish()
 		return
 	endif
