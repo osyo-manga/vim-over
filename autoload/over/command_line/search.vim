@@ -21,7 +21,7 @@ endfunction
 
 function! s:search_hl_on(pattern)
 	call s:search_hl_off()
-	let s:search_id = matchadd("Search", a:pattern)
+	let s:search_id = matchadd("IncSearch", a:pattern)
 endfunction
 
 
