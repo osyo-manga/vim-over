@@ -3,6 +3,20 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
+function! s:silent_feedkeys(expr, name, ...)
+	let mode = get(a:, 1, "m")
+	let name = "over-" . a:name
+	let map = printf("<Plug>(%s)", name)
+	if mode == "n"
+		let command = "nnoremap"
+	else
+		let command = "nmap"
+	endif
+	execute command "<silent>" map printf("%s:nunmap %s<CR>", a:expr, map)
+	call feedkeys(printf("\<Plug>(%s)", name))
+endfunction
+
+
 " http://d.hatena.ne.jp/thinca/20131104/1383498883
 " {range}s/{pattern}/{string}/{flags}
 function! s:parse_substitute(word)
@@ -85,9 +99,9 @@ function! s:restore_options()
 	let &incsearch = s:old_incsearch
 	let &hlsearch  = s:old_hlsearch
 	if g:over_enable_auto_nohlsearch
-		call feedkeys(":nohlsearch\<CR>", 'n')
+		call s:silent_feedkeys(":nohlsearch\<CR>", "nohlsearch", 'n')
 	endif
-	call feedkeys(":let @/ = " . string(s:old_search_pattern) . "\<CR>", 'n')
+	call s:silent_feedkeys(":let @/ = " . string(s:old_search_pattern) . "\<CR>", "restore-search-pattern", 'n')
 endfunction
 
 
