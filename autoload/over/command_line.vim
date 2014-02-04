@@ -15,6 +15,8 @@ endfunction
 let s:main = s:cmdline().make_standard("")
 call s:main.connect(s:cmdline().get_module("Doautocmd").make("OverCmdLine"))
 call s:main.connect(s:cmdline().get_module("KeyMapping").make_emacs())
+call s:main.connect("BufferComplete")
+call s:main.cnoremap("\<Tab>", "<Over>(buffer-complete)")
 
 
 function! s:main.keymapping()
