@@ -136,7 +136,7 @@ endfunction
 function! s:base.is_input(key, ...)
 	let prekey = get(a:, 1, "")
 	return self.get_tap_key() == prekey
-\		&& s:_unmap(self._get_keymapping(), self.char()) == a:key
+\		&& s:_unmap(self._get_keymapping(), self.char()).key == a:key
 endfunction
 
 
@@ -377,6 +377,7 @@ endfunction
 function! s:_as_key_config(config)
 	let base = {
 \		"noremap" : 0,
+\		"lock"    : 0,
 \	}
 	return type(a:config) == type({}) ? extend(base, a:config)
 \		 : extend(base, {
@@ -387,11 +388,12 @@ endfunction
 
 function! s:_unmap(mapping, key)
 	if !has_key(a:mapping, a:key)
-		return a:key
+		return s:_as_key_config(a:key)
 	endif
-	let rhs = s:_as_key_config(a:mapping[a:key])
-	if rhs.noremap
-		return rhs.key
+	let rhs  = s:_as_key_config(a:mapping[a:key])
+	let next = s:_as_key_config(get(a:mapping, rhs.key, {}))
+	if rhs.noremap && next.lock == 0
+		return rhs
 	endif
 	return s:_unmap(a:mapping, rhs.key)
 endfunction

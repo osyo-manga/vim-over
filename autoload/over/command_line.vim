@@ -16,7 +16,21 @@ let s:main = s:cmdline().make_standard("")
 call s:main.connect(s:cmdline().get_module("Doautocmd").make("OverCmdLine"))
 call s:main.connect(s:cmdline().get_module("KeyMapping").make_emacs())
 call s:main.connect("BufferComplete")
-call s:main.cnoremap("\<Tab>", "<Over>(buffer-complete)")
+
+let s:keymapping = {
+\	"name" : "MyKeyMapping"
+\}
+function! s:keymapping.keymapping(...)
+	return {
+\		"\<Tab>" : {
+\			"key" : "<Over>(buffer-complete)",
+\			"noremap" : 1,
+\			"lock" : 1,
+\		},
+\	}
+endfunction
+call s:main.connect(s:keymapping)
+
 
 
 function! s:main.keymapping()

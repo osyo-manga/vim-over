@@ -11,34 +11,42 @@ function! s:emacs.keymapping(cmdline)
 \		"\<C-f>" : {
 \			"key" : "\<Right>",
 \			"noremap" : 1,
+\			"lock" : 1,
 \		},
 \		"\<C-b>" : {
 \			"key" : "\<Left>",
 \			"noremap" : 1,
+\			"lock" : 1,
 \		},
 \		"\<C-n>" : {
 \			"key" : "\<Down>",
 \			"noremap" : 1,
+\			"lock" : 1,
 \		},
 \		"\<C-p>" : {
 \			"key" : "\<Up>",
 \			"noremap" : 1,
+\			"lock" : 1,
 \		},
 \		"\<C-a>" : {
 \			"key" : "\<Home>",
 \			"noremap" : 1,
+\			"lock" : 1,
 \		},
 \		"\<C-e>" : {
 \			"key" : "\<End>",
 \			"noremap" : 1,
+\			"lock" : 1,
 \		},
 \		"\<C-d>" : {
 \			"key" : "\<Del>",
 \			"noremap" : 1,
+\			"lock" : 1,
 \		},
 \		"\<A-d>" : {
 \			"key" : "\<C-w>",
 \			"noremap" : 1,
+\			"lock" : 1,
 \		},
 \	}
 endfunction
