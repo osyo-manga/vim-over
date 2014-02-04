@@ -8,8 +8,8 @@
   コマンド			  |over-commands|
 設定				|over-setting|
   over の変数			  |over-variables|
-over のコマンドラインのハイライト	|over-command_line-highlight|
-over のコマンドラインのキーマッピング	|over-command_line-key-mappings|
+over のコマンドラインのハイライト				|over-command_line-highlight|
+over のコマンドラインのキーマッピング				|over-command_line-key-mappings|
 over のコマンドラインの autocmd |over-command_line-autocmd|
 
 
@@ -154,11 +154,6 @@ over のコマンドラインのキーマッピング	*over-command_line-key-map
 <Tab>			バッファ上のワードで補完を行う
 <C-r>{0-9a-z"%#:-.*=}	番号/名前付きレジスタの挿入 
 
-	NOTE:
-	<Right> <Left> <Del> <Home> <End> <Up> <Down> はプラグイン側でマッ
-	プを行っているので、ユーザ側でマップを行う際はそれ以外のキーを使用
-	して下さい。
-
 また、以下は特殊なマッピングです。
 使用する場合は |OverCommandLineNoremap| で任意のキーに割り当てて下さい。
 
@@ -179,26 +174,6 @@ Example: >
     OverCommandLineNoremap <A-p> <Plug>(over-cmdline-substitute-jump-pattern)
 <
 
-NOTE: 次のキーは |OverCommandLineNoremap| にて再マップで定義されています。
-ユーザ側で |OverCommandLineNoremap| でマップする場合はもう片方のキーを使用して
-下さい。
-
-<Right>
-<Left>
-<Up>
-<Down>
-<BS>
-<Del>
-<Home>
-<End>
-
-Example: >
-	" NG
-	OverCommandLineNoremap <A-l> <Right>
-	
-	" OK
-	OverCommandLineNoremap <A-l> <C-f>
-<
 
 ==============================================================================
 over のコマンドラインの autocmd			*over-command_line-autocmd*
