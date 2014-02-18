@@ -278,7 +278,7 @@ function! s:main(prompt, input)
 				execute "normal! \<C-d>"
 			elseif over#command_line#is_input("\<Plug>(over-cmdline-scroll-b)")
 				execute "normal! \<C-b>"
-			else
+			elseif char2nr(s:char) != 128
 				call s:command_line.input(s:input)
 			endif
 
