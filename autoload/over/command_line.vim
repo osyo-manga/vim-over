@@ -353,6 +353,7 @@ call over#command_line#command_history#load()
 call over#command_line#insert_register#load()
 call over#command_line#complete#load()
 call over#command_line#search#load()
+call over#command_line#global#load()
 
 
 augroup over-cmdline
