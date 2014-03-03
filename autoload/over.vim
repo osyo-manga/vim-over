@@ -91,7 +91,7 @@ endfunction
 
 
 function! s:restore_options()
-	if s:search_highlighted
+	if s:search_highlighted || s:set_flag == 0
 		return
 	endif
 
