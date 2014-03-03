@@ -39,7 +39,6 @@ function! s:finish()
 		return
 	endif
 	call s:undojoin()
-	call s:reset_match()
 " 	call setpos(".", s:old_pos)
 	let &scrolloff = s:old_scrolloff
 	let &l:conceallevel = s:old_conceallevel

@@ -14,6 +14,7 @@ endfunction
 function! over#revital()
 	call vital#of("over").unload()
 	unlet! s:V
+	call over#vital()
 endfunction
 
 

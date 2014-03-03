@@ -29,8 +29,11 @@ command! -range -nargs=*
 \)
 
 
-function! s:key_mapping(lhs, rhs)
-	let g:over_command_line_key_mappings[a:lhs] = a:rhs
+function! s:key_mapping(lhs, rhs, noremap)
+	let g:over_command_line_key_mappings[a:lhs] = {
+\		"key" : a:rhs,
+\		"noremap" : a:noremap,
+\	}
 endfunction
 
 function! s:as_keymapping(key)
@@ -40,7 +43,11 @@ endfunction
 
 command! -nargs=*
 \	OverCommandLineNoremap
-\	call call("s:key_mapping", map([<f-args>], "s:as_keymapping(v:val)"))
+\	call call("s:key_mapping", map([<f-args>], "s:as_keymapping(v:val)") + [1])
+
+command! -nargs=*
+\	OverCommandLineMap
+\	call call("s:key_mapping", map([<f-args>], "s:as_keymapping(v:val)") + [0])
 
 
 let &cpo = s:save_cpo

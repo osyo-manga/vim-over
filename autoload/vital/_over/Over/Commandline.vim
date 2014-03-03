@@ -21,13 +21,20 @@ function! s:_vital_loaded(V)
 	for module in s:modules
 		let s:{module} = s:V.import('Over.Commandline.Modules.' . module)
 	endfor
-	let s:String = s:V.import("Over.String")
+	let s:String  = s:V.import("Over.String")
+	let s:Signals = s:V.import("Over.Signals")
+	let s:base.variables.modules = s:Signals.make()
+	function! s:base.variables.modules.get_slot(val)
+		return a:val.slot.module
+	endfunction
 endfunction
 
 
 function! s:_vital_depends()
-	return ["Over.String"]
-\		 + map(copy(s:modules), "'Over.Commandline.Modules.' . v:val")
+	return [
+\		"Over.String",
+\		"Over.Signals",
+\	] + map(copy(s:modules), "'Over.Commandline.Modules.' . v:val")
 endfunction
 
 
@@ -45,6 +52,7 @@ function! s:make_plain(prompt)
 	let result.prompt = a:prompt
 	call result.connect("Enter")
 	call result.connect("Cancel")
+	call result.connect(result, "_")
 	return result
 endfunction
 
@@ -75,7 +83,6 @@ let s:base = {
 \		"tap_key" : "",
 \		"exit" : 0,
 \		"keymapping" : {},
-\		"modules" : {},
 \	},
 \	"highlights" : {
 \		"prompt" : "NONE",
@@ -136,7 +143,13 @@ endfunction
 function! s:base.is_input(key, ...)
 	let prekey = get(a:, 1, "")
 	return self.get_tap_key() == prekey
-\		&& s:_unmap(self._get_keymapping(), self.char()).key == a:key
+\		&& self.char() == a:key
+" \		&& self.char() == (prekey . a:key)
+endfunction
+
+
+function! s:base.input_key()
+	return self.variables.input_key
 endfunction
 
 
@@ -158,30 +171,32 @@ endfunction
 
 function! s:base.connect(module, ...)
 	if type(a:module) == type("")
-		return self.connect(s:get_module(a:module).make())
+		return call(self.connect, [s:get_module(a:module).make()] + a:000, self)
 	endif
-	let name = get(a:, 1, a:module.name)
-	let self.variables.modules[name] = a:module
+	let name = a:0 > 0 ? a:1 : a:module.name
+	let slot = self.variables.modules.find_first_by("get(v:val.slot, 'name', '') == " . string(name))
+	if empty(slot)
+		call self.variables.modules.connect({ "name" : name, "module" : a:module })
+	else
+		let slot.slot.module = a:module
+	endif
+" 	let self.variables.modules[name] = a:module
 endfunction
 
 
 function! s:base.disconnect(name)
-	unlet self.variables.modules[a:name] = a:module
+	return self.variables.modules.disconnect_by(
+\		"get(v:val.slot, 'name', '') == " . string(a:name)
+\	)
+" 	unlet self.variables.modules[a:name]
 endfunction
 
 
-for s:_ in ["enter", "leave", "char", "char_pre", "execute_pre", "execute_failed", "execute", "cancel"]
-	execute join([
-\		"function! s:base._on_" . s:_ . "()",
-\		"	call map(copy(self.variables.modules), 'has_key(v:val, \"on_" . s:_ . "\") ? v:val.on_" . s:_ . "(self) : 0')",
-\		"	call self.on_" . s:_ . "()",
-\		"endfunction",
-\	], "\n")
-	
-	execute "function! s:base.on_" . s:_ . "()"
-	endfunction
-endfor
-unlet s:_
+function! s:base.callevent(event)
+	call self.variables.modules.sort_by("has_key(v:val.slot.module, 'priority') ? v:val.slot.module.priority('" . a:event . "') : 0")
+	return self.variables.modules.call(a:event, [self])
+" 	call map(filter(copy(self.variables.modules), "has_key(v:val, a:event)"), "v:val." . a:event . "(self)")
+endfunction
 
 
 function! s:base.cmap(lhs, rhs)
@@ -218,10 +233,10 @@ function! s:base.exit(...)
 endfunction
 
 
-function! s:base.cancel()
-	call self.exit(1)
-	call self._on_cancel()
-endfunction
+" function! s:base.cancel()
+" 	call self.exit(1)
+" 	call self._on_cancel()
+" endfunction
 
 
 function! s:base.exit_code()
@@ -230,10 +245,11 @@ endfunction
 
 
 function! s:base.hl_cursor_on()
-	if exists("self.variables.old_hi_cursor")
-		execute "highlight Cursor " . self.variables.old_hi_cursor
-		unlet self.variables.old_hi_cursor
+	if exists("self.variables.old_guicursor")
+		let &guicursor = self.variables.old_guicursor
+		unlet self.variables.old_guicursor
 	endif
+
 	if exists("self.variables.old_t_ve")
 		let &t_ve = self.variables.old_t_ve
 		unlet self.variables.old_t_ve
@@ -242,30 +258,14 @@ endfunction
 
 
 function! s:base.hl_cursor_off()
-	if exists("self.variables.old_hi_cursor")
-		return self.variables.old_hi_cursor
+	if exists("self.variables.old_t_ve")
+		return
 	endif
-	let self.variables.old_hi_cursor = "cterm=reverse"
-	if hlexists("Cursor")
-		let save_verbose = &verbose
-		let &verbose = 0
-		try
-			redir => cursor
-			silent highlight Cursor
-			redir END
-		finally
-			let &verbose = save_verbose
-		endtry
-		let hl = substitute(matchstr(cursor, 'xxx \zs.*'), '[ \t\n]\+\|cleared', ' ', 'g')
-		if !empty(substitute(hl, '\s', '', 'g'))
-			let self.variables.old_hi_cursor = hl
-		endif
-		highlight Cursor NONE
-	endif
+
+	let self.variables.old_guicursor = &guicursor
+	set guicursor=a:block-NONE
 	let self.variables.old_t_ve = &t_ve
 	set t_ve=
-
-	return self.variables.old_hi_cursor
 endfunction
 
 
@@ -292,28 +292,28 @@ function! s:base._init()
 	let self.variables.input = ""
 	let self.variables.exit = 0
 	let self.variables.exit_code = 1
-	let hl_cursor = self.hl_cursor_off()
+	call self.hl_cursor_off()
 	if !hlexists("OverCommandLineDefaultCursor")
-		execute "highlight OverCommandLineDefaultCursor " . hl_cursor
+		highlight link OverCommandLineDefaultCursor Cursor
 	endif
 	if !hlexists("OverCommandLineDefaultCursorInsert")
-		execute "highlight OverCommandLineDefaultCursorInsert " . hl_cursor . " term=underline gui=underline"
+		highlight OverCommandLineDefaultCursorInsert term=underline gui=underline
 	endif
 endfunction
 
 
 function! s:base._execute()
 	call s:redraw()
-	call self._on_execute_pre()
+	call self.callevent("on_execute_pre")
 	try
 		call self.execute()
 	catch
 		echohl ErrorMsg
 		echo matchstr(v:exception, 'Vim\((\w*)\)\?:\zs.*\ze')
 		echohl None
-		call self._on_execute_failed()
+		call self.callevent("on_execute_failed")
 	finally
-		call self._on_execute()
+		call self.callevent("on_execute")
 	endtry
 endfunction
 
@@ -322,26 +322,29 @@ function! s:base._main(...)
 	try
 		call self._init()
 		let self.line = deepcopy(s:String.make(get(a:, 1, "")))
-		call self._on_enter()
+		call self.callevent("on_enter")
 
 		while !self._is_exit()
 			call s:_echo_cmdline(self)
 
-			let self.variables.char = s:_getchar()
+			let self.variables.input_key = s:_getchar()
+			let self.variables.char = s:_unmap(self._get_keymapping(), self.variables.input_key)
+" 			let self.variables.char = s:_unmap(self._get_keymapping(), self.get_tap_key() . self.variables.input_key)
+
 			call self.setchar(self.variables.char)
 
-			call self._on_char_pre()
+			call self.callevent("on_char_pre")
 			call self.insert(self.variables.input)
-			call self._on_char()
+			call self.callevent("on_char")
 		endwhile
 	catch
 		echohl ErrorMsg | echo v:throwpoint . " " . v:exception | echohl None
 		return -1
 	finally
 		call self._finish()
-		call self._on_leave()
+		call s:redraw()
+		call self.callevent("on_leave")
 	endtry
-	call s:redraw()
 	return self.exit_code()
 endfunction
 
@@ -388,12 +391,12 @@ endfunction
 
 function! s:_unmap(mapping, key)
 	if !has_key(a:mapping, a:key)
-		return s:_as_key_config(a:key)
+		return a:key
 	endif
 	let rhs  = s:_as_key_config(a:mapping[a:key])
 	let next = s:_as_key_config(get(a:mapping, rhs.key, {}))
 	if rhs.noremap && next.lock == 0
-		return rhs
+		return rhs.key
 	endif
 	return s:_unmap(a:mapping, rhs.key)
 endfunction
@@ -401,9 +404,12 @@ endfunction
 
 function! s:base._get_keymapping()
 	let result = {}
-	for module in values(self.variables.modules)
+" 	for module in values(self.variables.modules)
+	for module in self.variables.modules.slots()
 		if has_key(module, "keymapping")
-			call extend(result, module.keymapping(self))
+			if module isnot self
+				call extend(result, module.keymapping(self))
+			endif
 		endif
 	endfor
 	return extend(extend(result, self.variables.keymapping), self.keymapping())
