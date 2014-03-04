@@ -36,9 +36,9 @@ function! s:main()
 		endif
 		if g:over#command_line#search#enable_move_cursor
 			if line =~ '^/.\+'
-				call search(pattern, "c")
+				silent! call search(pattern, "c")
 			else
-				call search(pattern, "cb")
+				silent! call search(pattern, "cb")
 			endif
 		endif
 	endif
