@@ -35,7 +35,6 @@ endfunction
 function! s:main()
 	call s:search_hl_off()
 	let line = over#command_line#backward()
-	echomsg line
 	if line =~ '\v^\%g!?\/.'
 		let bang = line =~ 'g!\/'
 		let pattern = matchstr(line, '\v\%g!?\/\zs%(\\\/|[^/])+')
