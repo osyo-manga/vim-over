@@ -16,7 +16,7 @@ endfunction
 
 
 function! s:search_hl_off()
-	if exists("s:search_id")
+	if exists("s:search_id") && s:search_id != -1
 		call matchdelete(s:search_id)
 		unlet s:search_id
 	endif
@@ -28,7 +28,7 @@ function! s:search_hl_on(pattern, bang)
 				\ '.*' . a:pattern . '.*' : a:pattern
 	let pattern = a:bang && g:over#command_bang#global#highlight_bang ?
 				\ '^\%(\%(' . pattern . '\)\@!.\)*$' : pattern
-	let s:search_id = matchadd("IncSearch", pattern)
+	silent! let s:search_id = matchadd("IncSearch", a:pattern)
 endfunction
 
 

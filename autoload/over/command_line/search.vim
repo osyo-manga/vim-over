@@ -12,7 +12,7 @@ endfunction
 
 
 function! s:search_hl_off()
-	if exists("s:search_id")
+	if exists("s:search_id") && s:search_id != -1
 		call matchdelete(s:search_id)
 		unlet s:search_id
 	endif
@@ -21,7 +21,7 @@ endfunction
 
 function! s:search_hl_on(pattern)
 	call s:search_hl_off()
-	let s:search_id = matchadd("IncSearch", a:pattern)
+	silent! let s:search_id = matchadd("IncSearch", a:pattern)
 endfunction
 
 
