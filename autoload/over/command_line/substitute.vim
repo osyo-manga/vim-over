@@ -28,7 +28,10 @@ function! s:init()
 	execute printf(hl_f, "OverCmdLineSubstituteHiddenBegin", s:hl_mark_begin)
 	execute printf(hl_f, "OverCmdLineSubstituteHiddenCenter", s:hl_mark_center)
 	execute printf(hl_f, "OverCmdLineSubstituteHiddenEnd", s:hl_mark_end)
-
+" 	syntax match OverCmdLineSubstituteHiddenBegin  '`os`' conceal containedin=ALL
+" 	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
+" 	syntax match OverCmdLineSubstituteHiddenEnd    '`oe`' conceal containedin=ALL
+	
 	let s:undo_file = tempname()
 	execute "wundo" s:undo_file
 endfunction
@@ -38,7 +41,7 @@ function! s:finish()
 	if &modifiable == 0
 		return
 	endif
-	call s:undojoin()
+	call s:reset_match()
 " 	call setpos(".", s:old_pos)
 	let &scrolloff = s:old_scrolloff
 	let &l:conceallevel = s:old_conceallevel
@@ -179,8 +182,8 @@ augroup over-cmdline-substitute
 	autocmd User OverCmdLineEnter call s:init()
 " 	autocmd User OverCmdLineExecutePre call s:finish()
 	autocmd User OverCmdLineLeave call s:finish()
-" 	autocmd User OverCmdLineExecutePre call s:undojoin()
-" 	autocmd User OverCmdLineCancel call s:undojoin()
+	autocmd User OverCmdLineExecutePre call s:undojoin()
+	autocmd User OverCmdLineCancel call s:undojoin()
 	autocmd User OverCmdLineChar call s:substitute_preview(over#command_line#getline())
 	autocmd user OverCmdLineCharPre call s:on_charpre()
 augroup END
@@ -189,4 +192,3 @@ augroup END
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-
