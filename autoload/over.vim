@@ -3,6 +3,11 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
+function! over#load()
+	call over#command_line#load()
+endfunction
+
+
 function! over#vital()
 	if exists("s:V")
 		return s:V

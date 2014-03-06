@@ -2,6 +2,11 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! over#command_line#load()
+	" dummy
+endfunction
+
+
 unlet! s:_cmdline
 function! s:cmdline()
 	if exists("s:_cmdline")
@@ -55,7 +60,7 @@ call s:main.connect(s:module)
 
 function! over#command_line#start(prompt, input)
 	if exists("*strchars") && has("conceal")
-		let s:main.prompt = a:prompt
+		call s:main.set_prompt(a:prompt)
 		call s:main.start(a:input)
 	else
 		echohl ErrorMsg
@@ -120,20 +125,6 @@ endfunction
 function! over#command_line#backward()
 	return s:main.backward()
 endfunction
-
-
-function! over#command_line#start(prompt, input)
-	if exists("*strchars") && has("conceal")
-		let s:main.prompt = a:prompt
-		call s:main.start(a:input)
-	else
-		echohl ErrorMsg
-		echo "Vim 7.3 or above."
-		echo "Need strchars() and +conceal."
-		echohl NONE
-	endif
-endfunction
-
 
 
 call over#command_line#substitute#load()
