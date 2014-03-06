@@ -50,6 +50,7 @@ function! s:module.on_char(cmdline)
 			return
 		endif
 		call self.search_hl_on('\%' . pos[0] . 'l' . (&ignorecase ? '\c' : "") . result)
+		redraw
 	endif
 endfunction
 

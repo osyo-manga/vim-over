@@ -8,14 +8,15 @@ let s:module = {
 \}
 
 
-function! s:module.is_insert(char)
+function! s:module.is_no_insert(char)
 	return index(self.chars, a:char) >= 0
 endfunction
 
 
 function! s:module.on_char_pre(cmdline)
-	if self.is_insert(a:cmdline.char())
-		call a:cmdline.setchar("")
+	if self.is_no_insert(a:cmdline.char())
+\	&& a:cmdline.char() == a:cmdline.variables.input
+		call a:cmdline.setchar("", 0)
 	endif
 endfunction
 
@@ -29,7 +30,7 @@ endfunction
 
 function! s:make_special_chars()
 	let module = s:make([])
-	function! module.is_insert(char)
+	function! module.is_no_insert(char)
 		return char2nr(a:char) == 128 || char2nr(a:char) < 27
 	endfunction
 	return module

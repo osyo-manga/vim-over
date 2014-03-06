@@ -3,15 +3,15 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let s:module = {
-\	"name" : "Enter"
+\	"name" : "Exit",
+\	"exit_code" : 0
 \}
 
+
 function! s:module.on_char_pre(cmdline)
-	if a:cmdline.is_input("\<CR>")
-\	|| a:cmdline.is_input("\<NL>")
-\	|| a:cmdline.is_input("\<C-j>")
-		call a:cmdline.exit(0)
+	if a:cmdline.is_input("<Over>(exit)")
 		call a:cmdline.setchar("")
+		call a:cmdline.exit(self.exit_code)
 	endif
 endfunction
 
