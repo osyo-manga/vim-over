@@ -3,6 +3,21 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
+function! over#vital()
+	if exists("s:V")
+		return s:V
+	endif
+	let s:V = vital#of("over")
+	return s:V
+endfunction
+
+function! over#revital()
+	call vital#of("over").unload()
+	unlet! s:V
+	call over#vital()
+endfunction
+
+
 function! s:silent_feedkeys(expr, name, ...)
 	let mode = get(a:, 1, "m")
 	let name = "over-" . a:name
