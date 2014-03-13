@@ -1,4 +1,4 @@
-#over.vim
+#over.vim 2.0
 
 ##Screencapture
 ###Preview in the command line window
@@ -22,5 +22,12 @@
 
 [NYSL English](http://www.kmonos.net/nysl/index.en.html)
 
+##Change log
+
+* 2.0
+ * Refactoring
+ * Change cursor highlight
+ * Add highlighting `/` and `g/`
+ * No input specital keys(e.g. `<BS>`, `<C->`)
 
 
