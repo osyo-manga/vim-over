@@ -21,6 +21,7 @@ let s:main = s:cmdline().make_standard("")
 call s:main.connect(s:cmdline().get_module("Doautocmd").make("OverCmdLine"))
 call s:main.connect(s:cmdline().get_module("KeyMapping").make_emacs())
 call s:main.connect("BufferComplete")
+call s:main.connect("ExceptionMessage")
 call s:main.cnoremap("\<Tab>", "<Over>(buffer-complete)")
 
 
@@ -61,7 +62,10 @@ call s:main.connect(s:module)
 function! over#command_line#start(prompt, input)
 	if exists("*strchars") && has("conceal")
 		call s:main.set_prompt(a:prompt)
-		call s:main.start(a:input)
+		let exit_code = s:main.start(a:input)
+		if exit_code == 1
+			doautocmd User OverCmdLineCancel
+		endif
 	else
 		echohl ErrorMsg
 		echo "Vim 7.3 or above."
