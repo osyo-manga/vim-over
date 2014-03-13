@@ -114,6 +114,10 @@ endfunction
 
 
 function! s:substitute_preview(line)
+	if over#command_line#is_input("\<CR>")
+		return
+	endif
+
 	call s:undo()
 
 	call s:reset_match()
