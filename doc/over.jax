@@ -16,7 +16,7 @@ over のコマンドラインの autocmd |over-command_line-autocmd|
 ==============================================================================
 概要						*over-introduction*
 
-*over.vim* は |:substitute| の {pattern} のハイライトするプラグインです。
+*over.vim* は |:substitute| の {pattern} をハイライトするプラグインです。
 この機能を使用する場合、コマンドラインではなくてコマンドラインウィンドウから
 |:substitute| を行う必要があります。
 また、この場合は {pattern} のみがハイライトされます。
