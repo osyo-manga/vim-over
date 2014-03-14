@@ -27,7 +27,7 @@
 * 2.0
  * Refactoring
  * Change cursor highlight
- * Add highlighting `/` and `g/`
+ * Add highlighting `:/` and `:%g/`
  * No input specital keys(e.g. `<BS>`, `<C->`)
 
 
