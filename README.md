@@ -30,4 +30,3 @@
  * Add highlighting `:/` and `:%g/`
  * No input specital keys(e.g. `<BS>`, `<C->`)
 
-

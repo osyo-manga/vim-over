@@ -22,11 +22,17 @@ call s:main.connect(s:cmdline().get_module("Doautocmd").make("OverCmdLine"))
 call s:main.connect(s:cmdline().get_module("KeyMapping").make_emacs())
 call s:main.connect("BufferComplete")
 call s:main.connect("ExceptionMessage")
+call s:main.connect("Paste")
 " call s:main.cnoremap("\<Tab>", "<Over>(buffer-complete)")
 
 let s:base_keymapping = {
 \	"\<Tab>" : {
 \		"key" : "<Over>(buffer-complete)",
+\		"lock" : 1,
+\		"noremap" : 1,
+\	},
+\	"\<C-v>" : {
+\		"key" : "<Over>(paste)",
 \		"lock" : 1,
 \		"noremap" : 1,
 \	}

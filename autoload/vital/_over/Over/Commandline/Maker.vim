@@ -14,6 +14,8 @@ let s:modules = [
 \	"InsertRegister",
 \	"Redraw",
 \	"DrawCommandline",
+\	"ExceptionExit",
+\	"ExceptionMessage",
 \]
 
 
