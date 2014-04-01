@@ -2,6 +2,9 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
+
+
+
 function! over#command_line#load()
 	" dummy
 endfunction
@@ -22,7 +25,38 @@ call s:main.connect(s:cmdline().get_module("Doautocmd").make("OverCmdLine"))
 call s:main.connect(s:cmdline().get_module("KeyMapping").make_emacs())
 call s:main.connect("BufferComplete")
 call s:main.connect("ExceptionMessage")
-call s:main.connect("Paste")
+" call s:main.connect("Paste")
+
+
+let g:over#command_line#paste_escape_pattern = get(g:, "over#command_line#paste_escape_pattern", "")
+let g:over#command_line#paste_escape_char = get(g:, "over#command_line#paste_escape_char", '\')
+
+function! s:escape(text)
+	let pattern = g:over#command_line#paste_escape_pattern
+	if pattern == ""
+		return a:text
+	endif
+	let char = g:over#command_line#paste_escape_char
+	return substitute(a:text, '\(' . pattern . '\)', char . '\\1', "g")
+endfunction
+
+
+let s:module = {
+\	"name" : "Paste"
+\}
+
+function! s:module.on_char_pre(cmdline)
+	if a:cmdline.is_input("<Over>(paste)")
+		let register = v:register == "" ? '"' : v:register
+		let text = s:escape(getreg("*"))
+		call a:cmdline.insert(tr(text, "\n", "\r"))
+		call a:cmdline.setchar('')
+	endif
+endfunction
+call s:main.connect(s:module)
+unlet s:module
+
+
 " call s:main.cnoremap("\<Tab>", "<Over>(buffer-complete)")
 
 let s:base_keymapping = {
