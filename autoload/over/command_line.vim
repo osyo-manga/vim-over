@@ -29,7 +29,14 @@ call s:main.connect("ExceptionMessage")
 
 
 let g:over#command_line#paste_escape_chars = get(g:, "over#command_line#paste_escape_chars", '')
-let g:over#command_line#enable_paste_escape_CR_char = get(g:, "over#command_line#enable_paste_escape_CR_char", 1)
+
+
+let s:default_filters = {
+\	"\n" : '\\n',
+\	"\r" : '\\r',
+\}
+
+let g:over#command_line#paste_filters = get(g:, "over#command_line#paste_filters", s:default_filters)
 
 
 let s:module = {
@@ -40,11 +47,10 @@ function! s:module.on_char_pre(cmdline)
 	if a:cmdline.is_input("<Over>(paste)")
 		let register = v:register == "" ? '"' : v:register
 		let text = escape(getreg(register), g:over#command_line#paste_escape_chars)
-		if g:over#command_line#enable_paste_escape_CR_char
-			call a:cmdline.insert(substitute(text, "\n", '\\n', "g"))
-		else
-			call a:cmdline.insert(tr(text, "\n", "\r"))
-		endif
+		for [pat, rep] in items(g:over#command_line#paste_filters)
+			let text = substitute(text, pat, rep, "g")
+		endfor
+		call a:cmdline.insert(text)
 		call a:cmdline.setchar('')
 	endif
 endfunction
