@@ -108,6 +108,24 @@ g:over#command_line#search#enable_move_cursor
 Default: >
 	let g:over#command_line#search#enable_move_cursor = 0
 <
+				*g:over#command_line#paste_escape_chars*
+g:over#command_line#paste_escape_chars
+	<C-v> 時に挿入するテキストを \ でエスケープする文字を設定する。
+Example: >
+	" $foo.bar / 2 + 1 を挿入すると
+	" \$foo\.bar \/ 2 + 1 が挿入される
+	let g:over#command_line#paste_escape_chars = '/.*$^~'
+<
+
+g:over#command_line#paste_filters	*g:over#command_line#paste_filters*
+	<C-v> 時に挿入するテキストを任意の文字で置換える設定をする。
+Default: >
+	" 改行コードを "\n" や "\r" に置き換えて挿入する
+	let g:over#command_line#paste_filters = {
+	\	"\n" : '\\n',
+	\	"\r" : '\\r',
+	\}
+<
 
 
 ==============================================================================
