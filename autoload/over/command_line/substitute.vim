@@ -24,7 +24,7 @@ function! s:init()
 	let s:old_concealcursor = &l:concealcursor
 	let s:old_modified = &l:modified
 
-	let hl_f = "syntax match %s '%s' conceal containedin=ALL"
+	let hl_f = "syntax match %s '%s' conceal containedin=.*"
 	execute printf(hl_f, "OverCmdLineSubstituteHiddenBegin", s:hl_mark_begin)
 	execute printf(hl_f, "OverCmdLineSubstituteHiddenCenter", s:hl_mark_center)
 	execute printf(hl_f, "OverCmdLineSubstituteHiddenEnd", s:hl_mark_end)
@@ -47,9 +47,9 @@ function! s:finish()
 	let &l:conceallevel = s:old_conceallevel
 	let &l:concealcursor = s:old_concealcursor
 	let &l:modified = s:old_modified
-	highlight link OverCmdLineSubstitute NONE
-	highlight link OverCmdLineSubstitutePattern NONE
-	highlight link OverCmdLineSubstituteString  NONE
+" 	highlight link OverCmdLineSubstitute NONE
+" 	highlight link OverCmdLineSubstitutePattern NONE
+" 	highlight link OverCmdLineSubstituteString  NONE
 endfunction
 
 
