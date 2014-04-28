@@ -3,6 +3,11 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
+function! s:escape_regex(pattern)
+	return substitute(a:pattern, '^\^', '\\_^', "")
+endfunction
+
+
 
 let s:module = {
 \	"name" : "Incsearch",
@@ -49,10 +54,11 @@ function! s:module.on_char(cmdline)
 		if pos == [0, 0]
 			return
 		endif
-		call self.search_hl_on('\%' . pos[0] . 'l' . (&ignorecase ? '\c' : "") . result)
+		call self.search_hl_on('\%' . pos[0] . 'l' . (&ignorecase ? '\c' : "") . s:escape_regex(result))
 		redraw
 	endif
 endfunction
+
 
 function! s:make(...)
 	let module = deepcopy(s:module)
