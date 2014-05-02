@@ -187,3 +187,5 @@ call over#command_line#search#load()
 call over#command_line#global#load()
 
 
+let &cpo = s:save_cpo
+unlet s:save_cpo
