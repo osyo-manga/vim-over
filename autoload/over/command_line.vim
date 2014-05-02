@@ -160,7 +160,7 @@ function! over#command_line#wait_keyinput_off(key)
 endfunction
 
 function! over#command_line#get_wait_keyinput()
-	return s:main.tap_key(a:key)
+	return s:main.get_tap_key()
 endfunction
 
 
@@ -187,5 +187,3 @@ call over#command_line#search#load()
 call over#command_line#global#load()
 
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
