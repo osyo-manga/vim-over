@@ -51,7 +51,7 @@ function! s:module.on_char_pre(cmdline)
 		call a:cmdline.setline(self.old_line)
 		call a:cmdline.setpos(self.old_pos)
 		let char = a:cmdline.input_key()
-		if char =~ '^[0-9a-zA-z.%#:/"\-*]$'
+		if char =~ '^[0-9a-zA-z.%#:/"\-*+]$'
 			let register = tr(getreg(char), "\n", "\r")
 			call a:cmdline.setchar(register)
 		elseif char == "="
