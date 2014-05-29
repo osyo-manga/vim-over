@@ -87,10 +87,12 @@ endfunction
 function! s:module.on_char(cmdline)
 	if a:cmdline.is_input("\<C-r>")
 		call a:cmdline.tap_keyinput(self.prefix_key)
+		call a:cmdline.disable_keymapping()
 		call a:cmdline.setpos(a:cmdline.getpos()-1)
 	else
 		if exists("self.prefix_key")
 			call a:cmdline.untap_keyinput(self.prefix_key)
+			call a:cmdline.enable_keymapping()
 			unlet! self.prefix_key
 		endif
 	endif
