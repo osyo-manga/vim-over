@@ -580,7 +580,6 @@ let s:special_keys = [
 \	"\<C-F10>",
 \	"\<C-F11>",
 \	"\<C-F12>",
-\	"\<BS>",
 \	"\<S-Down>",
 \	"\<S-Up>",
 \	"\<S-Left>",
