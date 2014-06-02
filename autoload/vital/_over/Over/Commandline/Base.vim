@@ -481,6 +481,7 @@ endfunction
 
 function! s:_split_keystring(str, pats, ...)
 	if a:str =~ '^<Over>(.\{-})$'
+\	|| a:str =~ "^\<Plug>(.\\{-})$"
 		return [a:str]
 	endif
 	let pats = a:pats
