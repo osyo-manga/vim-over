@@ -3,6 +3,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
+let g:over#debug_vital_over = get(g:, "over#debug_vital_over", 0)
+
+
 function! over#load()
 	call over#command_line#load()
 endfunction
@@ -12,7 +15,11 @@ function! over#vital()
 	if exists("s:V")
 		return s:V
 	endif
-	let s:V = vital#of("over")
+	if g:over#debug_vital_over
+		let s:V = vital#of("vital")
+	else
+		let s:V = vital#of("over")
+	endif
 	return s:V
 endfunction
 

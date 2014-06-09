@@ -72,6 +72,30 @@ function! s:search(pattern)
   return s:_uniq(modules)
 endfunction
 
+function! s:expand_modules(entry, all)
+  if type(a:entry) == type([])
+    let candidates = s:_concat(map(copy(a:entry), 's:search(v:val)'))
+    if empty(candidates)
+      throw printf('vital: Any of module %s is not found', string(a:entry))
+    endif
+    if eval(join(map(copy(candidates), 'has_key(a:all, v:val)'), '+'))
+      let modules = []
+    else
+      let modules = [candidates[0]]
+    endif
+  else
+    let modules = s:search(a:entry)
+    if empty(modules)
+      throw printf('vital: Module %s is not found', a:entry)
+    endif
+  endif
+  call filter(modules, '!has_key(a:all, v:val)')
+  for module in modules
+    let a:all[module] = 1
+  endfor
+  return modules
+endfunction
+
 function! s:_import(name)
   if type(a:name) == type(0)
     return s:_build_module(a:name)
@@ -127,7 +151,7 @@ function! s:_scripts()
 endfunction
 
 function! s:_file2module(file)
-  let filename = s:_unify_path(a:file)
+  let filename = fnamemodify(a:file, ':p:gs?[\\/]\+?/?')
   let tail = matchstr(filename, 'autoload/vital/_\w\+/\zs.*\ze\.vim$')
   return join(split(tail, '[\\/]\+'), '.')
 endfunction
@@ -138,7 +162,7 @@ if filereadable(expand('<sfile>:r') . '.VIM')
     " So if getting full path via <sfile> and $HOME was set as 8.3 format,
     " vital load duplicated scripts. Below's :~ avoid this issue.
     return tolower(fnamemodify(resolve(fnamemodify(
-    \              a:path, ':p:gs?[\\/]\+?/?')), ':~'))
+    \              a:path, ':p')), ':~:gs?[\\/]\+?/?'))
   endfunction
 else
   function! s:_unify_path(path)
@@ -181,7 +205,11 @@ function! s:_build_module(sid)
   if has_key(module, '_vital_loaded')
     let V = vital#{s:self_version}#new()
     if has_key(module, '_vital_depends')
-      call call(V.load, module._vital_depends(), V)
+      let all = {}
+      let modules =
+      \     s:_concat(map(module._vital_depends(),
+      \                   's:expand_modules(v:val, all)'))
+      call call(V.load, modules, V)
     endif
     try
       call module._vital_loaded(V)
@@ -232,6 +260,14 @@ else
     return a:list
   endfunction
 endif
+
+function! s:_concat(lists)
+  let result_list = []
+  for list in a:lists
+    let result_list += list
+  endfor
+  return result_list
+endfunction
 
 function! s:_redir(cmd)
   let [save_verbose, save_verbosefile] = [&verbose, &verbosefile]

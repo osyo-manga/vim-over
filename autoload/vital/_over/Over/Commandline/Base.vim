@@ -586,9 +586,7 @@ let s:special_keys = [
 \	"\<S-Left>",
 \	"\<S-Right>",
 \	"\<S-Home>",
-\	"\<S-End>",
 \	"\<S-Insert>",
-\	"\<S-Delete>",
 \	"\<S-PageUp>",
 \	"\<S-PageDown>",
 \	"\<S-F1>",
@@ -605,10 +603,14 @@ let s:special_keys = [
 \	"\<S-F12>",
 \	"\<S-Tab>",
 \]
+" Issues #45
+" \	"\<S-End>",
+" \	"\<S-Delete>",
 
 function! s:_split_keys(str)
 	return s:_split_keystring(a:str, s:special_keys)
 endfunction
+
 
 
 let &cpo = s:save_cpo
