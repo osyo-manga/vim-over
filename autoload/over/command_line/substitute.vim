@@ -130,7 +130,7 @@ function! s:substitute_preview(line)
 
 	let [range, pattern, string, flags] = result
 	if empty(pattern)
-		return
+		let pattern = @/
 	endif
 
 	if empty(string)
