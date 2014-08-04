@@ -147,7 +147,7 @@ function! s:substitute_preview(line)
 	else
 		let string = s:hl_mark_begin . '\0' . s:hl_mark_center . string . s:hl_mark_end
 	endif
-	let s:undo_flag = s:silent_substitute(range, pattern, string, &gdefault ? '' : 'g')
+	let s:undo_flag = s:silent_substitute(range, pattern, string, flags)
 
 	let &l:concealcursor = "nvic"
 	let &l:conceallevel = 3
