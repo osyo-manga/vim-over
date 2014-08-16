@@ -152,7 +152,7 @@ Key                     Action~
 <Esc>			Exits from the command line
 <C-v>			Yank into the command line
 <BS> or <C-h>		Deletes the character the cursor is on
-<C-w>			Deletes the previous charater
+<C-w>			Deletes the previous character
 <Right> or <C-f>        Moves the cursor to the right
 <Left> or <C-b>		Moves the cursor to the left
 <Del> or <C-d>		Deletes the character the cursor is on
@@ -181,7 +181,7 @@ Key						Action
 <Plug>(over-cmdline-scroll-f)			|CTRL-f| equivalent
 <Plug>(over-cmdline-scroll-e)			|CTRL-e| equivalent
 <Plug>(over-cmdline-scroll-d)			|CTRL-d| equivalent
-<Plug>(over-cmdline-scroll-b)			|CTRL-b| eauivqlent
+<Plug>(over-cmdline-scroll-b)			|CTRL-b| equivalent
 
 Example: >
     OverCommandLineNoremap <A-s> <Plug>(over-cmdline-substitute-jump-string)
@@ -210,7 +210,7 @@ CHANGE LOG                                                 *over-changelog*
   - Refactoring
   - Change cursor highlight
   - Add highlighting :/ and :%g/
-  - No input specital keys(e.g. <BS>, <C->)
+  - No input special keys(e.g. <BS>, <C->)
 
 ==============================================================================
 vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
