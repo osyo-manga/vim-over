@@ -94,10 +94,11 @@ endfunction
 
 function! s:silent_substitute(range, pattern, string, flags)
 	try
+		let flags = substitute(a:flags, 'c', '', "g")
 		let old_pos = getpos(".")
 		let old_search = @/
 		let check = b:changedtick
-		silent execute printf('%ss/%s/%s/%s', a:range, a:pattern, a:string, a:flags)
+		silent execute printf('%ss/%s/%s/%s', a:range, a:pattern, a:string, flags)
 		call histdel("search", -1)
 	catch /\v^Vim%(\(\a+\))=:(E121)|(E117)|(E110)|(E112)|(E113)|(E731)|(E475)|(E15)/
 		if check != b:changedtick
