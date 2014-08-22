@@ -117,6 +117,13 @@ function! s:set_options()
 endfunction
 
 
+
+nnoremap <silent><expr> <Plug>(over-restore-search-pattern)
+\	(mode() =~ '[iR]' ? "\<C-o>" : "") . ":let @/ = " . string(s:old_search_pattern) . "\<CR>"
+
+nnoremap <silent><expr> <Plug>(over-restore-nohlsearch)
+\	(mode() =~ '[iR]' ? "\<C-o>" : "") . ":nohlsearch\<CR>"
+
 function! s:restore_options()
 	if s:search_highlighted || s:set_flag == 0
 		return
@@ -126,9 +133,11 @@ function! s:restore_options()
 	let &incsearch = s:old_incsearch
 	let &hlsearch  = s:old_hlsearch
 	if g:over_enable_auto_nohlsearch
-		call s:silent_feedkeys(":nohlsearch\<CR>", "nohlsearch", 'n')
+" 		call s:silent_feedkeys(":nohlsearch\<CR>", "nohlsearch", 'n')
+		call feedkeys("\<Plug>(over-restore-nohlsearch)")
 	endif
-	call s:silent_feedkeys(":let @/ = " . string(s:old_search_pattern) . "\<CR>", "restore-search-pattern", 'n')
+	execute "normal \<Plug>(over-restore-search-pattern)"
+" 	call s:silent_feedkeys(":let @/ = " . string(s:old_search_pattern) . "\<CR>", "restore-search-pattern", 'n')
 endfunction
 
 
