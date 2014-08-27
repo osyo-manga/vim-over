@@ -35,7 +35,7 @@ endfunction
 
 
 function! s:make_plain()
-	return deepcpy(s:base)
+	return deepcopy(s:base)
 endfunction
 
 

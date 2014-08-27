@@ -109,7 +109,6 @@ endfunction
 call s:main.connect(s:module)
 
 
-
 function! over#command_line#start(prompt, input)
 	if exists("*strchars") && has("conceal")
 		call s:main.set_prompt(a:prompt)
