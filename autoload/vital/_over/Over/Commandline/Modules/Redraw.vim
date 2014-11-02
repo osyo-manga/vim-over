@@ -39,8 +39,12 @@ function! s:module.redraw(cmdline)
 	redraw
 	" Workaround for the :set cedit=<C-c>
 	" https://github.com/osyo-manga/vital-over/issues/52
+	" https://github.com/Lokaltog/vim-easymotion/issues/177#issuecomment-53663431
 	if &cedit != "<C-c>"
+\	||(v:version >= 704 && has("patch441"))
 		normal! :
+	else
+		execute "normal! :\<Esc>"
 	endif
 endfunction
 
