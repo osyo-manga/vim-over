@@ -115,6 +115,10 @@ endfunction
 
 
 function! s:substitute_preview(line)
+	if &modifiable == 0
+		return
+	endif
+
 	if over#command_line#is_input("\<CR>")
 		return
 	endif
