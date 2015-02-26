@@ -46,7 +46,9 @@ function! s:finish()
 	let &scrolloff = s:old_scrolloff
 	let &l:conceallevel = s:old_conceallevel
 	let &l:concealcursor = s:old_concealcursor
+
 	let &l:modified = s:old_modified
+
 " 	highlight link OverCmdLineSubstitute NONE
 " 	highlight link OverCmdLineSubstitutePattern NONE
 " 	highlight link OverCmdLineSubstituteString  NONE
@@ -100,6 +102,7 @@ function! s:silent_substitute(range, pattern, string, flags)
 		let check = b:changedtick
 		silent execute printf('%ss/%s/%s/%s', a:range, a:pattern, a:string, flags)
 		call histdel("search", -1)
+		setlocal nomodified
 	catch /\v^Vim%(\(\a+\))=:(E121)|(E117)|(E110)|(E112)|(E113)|(E731)|(E475)|(E15)/
 		if check != b:changedtick
 			call s:silent_undo()
