@@ -102,7 +102,7 @@ function! s:silent_substitute(range, pattern, string, flags)
 		let check = b:changedtick
 		silent execute printf('%ss/%s/%s/%s', a:range, a:pattern, a:string, flags)
 		call histdel("search", -1)
-		setlocal nomodified
+		let &l:modified = s:old_modified
 	catch /\v^Vim%(\(\a+\))=:(E121)|(E117)|(E110)|(E112)|(E113)|(E731)|(E475)|(E15)/
 		if check != b:changedtick
 			call s:silent_undo()
@@ -192,8 +192,8 @@ endfunction
 augroup over-cmdline-substitute
 	autocmd!
 	autocmd User OverCmdLineEnter call s:init()
-" 	autocmd User OverCmdLineExecutePre call s:finish()
-	autocmd User OverCmdLineLeave call s:finish()
+	autocmd User OverCmdLineExecutePre call s:finish()
+" 	autocmd User OverCmdLineLeave call s:finish()
 	autocmd User OverCmdLineExecutePre call s:undojoin()
 	autocmd User OverCmdLineCancel call s:undojoin()
 	autocmd User OverCmdLineChar call s:substitute_preview(over#command_line#getline())
