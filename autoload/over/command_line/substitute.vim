@@ -34,13 +34,15 @@ function! s:init()
 	
 	let s:undo_file = tempname()
 	execute "wundo" s:undo_file
+	let s:finished = 0
 endfunction
 
 
 function! s:finish()
-	if &modifiable == 0
+	if &modifiable == 0 || s:finished
 		return
 	endif
+	let s:finished = 1
 	call s:reset_match()
 " 	call setpos(".", s:old_pos)
 	let &scrolloff = s:old_scrolloff
@@ -193,7 +195,7 @@ augroup over-cmdline-substitute
 	autocmd!
 	autocmd User OverCmdLineEnter call s:init()
 	autocmd User OverCmdLineExecutePre call s:finish()
-" 	autocmd User OverCmdLineLeave call s:finish()
+	autocmd User OverCmdLineLeave call s:finish()
 	autocmd User OverCmdLineExecutePre call s:undojoin()
 	autocmd User OverCmdLineCancel call s:undojoin()
 	autocmd User OverCmdLineChar call s:substitute_preview(over#command_line#getline())
