@@ -186,5 +186,11 @@ call over#command_line#search#load()
 call over#command_line#global#load()
 
 
+function! over#command_line#do(input)
+	call s:main.start(a:input)
+	return s:main.getline()
+endfunction
+
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
