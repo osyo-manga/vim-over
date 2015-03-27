@@ -194,9 +194,10 @@ endfunction
 augroup over-cmdline-substitute
 	autocmd!
 	autocmd User OverCmdLineEnter call s:init()
+	autocmd User OverCmdLineExecutePre call s:undojoin()
 	autocmd User OverCmdLineExecutePre call s:finish()
 	autocmd User OverCmdLineLeave call s:finish()
-	autocmd User OverCmdLineExecutePre call s:undojoin()
+	autocmd User OverCmdLineException call s:finish()
 	autocmd User OverCmdLineCancel call s:undojoin()
 	autocmd User OverCmdLineChar call s:substitute_preview(over#command_line#getline())
 	autocmd user OverCmdLineCharPre call s:on_charpre()
