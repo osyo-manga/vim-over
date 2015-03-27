@@ -42,8 +42,8 @@ function! s:finish()
 	if &modifiable == 0 || s:finished
 		return
 	endif
-	let s:finished = 1
 	call s:reset_match()
+	let s:finished = 1
 " 	call setpos(".", s:old_pos)
 	let &scrolloff = s:old_scrolloff
 	let &l:conceallevel = s:old_conceallevel
@@ -89,7 +89,7 @@ let s:matchlist = []
 function! s:reset_match()
 	for id in s:matchlist
 		if id != -1
-			call matchdelete(id)
+			silent! call matchdelete(id)
 		endif
 	endfor
 	let s:matchlist = []
