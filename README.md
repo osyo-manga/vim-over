@@ -1,4 +1,4 @@
-#over.vim 2.0
+#over.vim 3.0
 
 ##Screencapture
 ###Preview in the command line window
@@ -23,6 +23,15 @@
 [NYSL English](http://www.kmonos.net/nysl/index.en.html)
 
 ##Change log
+
+* 3.0
+ * Add digraph
+ * Add `<C-v>`, `<C-q>`
+ * Import cmap/cnoremap setting
+ * `<C-w>` by regexp
+ * Multi lhs by keymapping
+ * Support `<expr>` keymapping
+ * Refactoring
 
 * 2.0
  * Refactoring
