@@ -39,3 +39,8 @@
  * Add highlighting `:/` and `:%g/`
  * No input specital keys(e.g. `<BS>`, `<C->`)
 
+##Special Thanks
+
+* [@haya14busa](https://github.com/haya14busa)
+
+
