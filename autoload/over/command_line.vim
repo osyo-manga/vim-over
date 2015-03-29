@@ -192,5 +192,10 @@ function! over#command_line#do(input)
 endfunction
 
 
+function! over#command_line#get()
+	return s:main
+endfunction
+
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
