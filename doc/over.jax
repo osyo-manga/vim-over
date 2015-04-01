@@ -48,14 +48,19 @@ Requirements:
 :OverCommandLineNoremap {lhs} {rhs}		*:OverCommandLineNoremap*
 	コマンドラインで使用するキーを設定します。
 	{lhs} のキーが {rhs} に割り当てられます。
-	ここで設定する事ができるキーは1文字、もしくは修飾キー+1文字のみ割り当
-	てることができます。
 	また、再マップは行われません。
 	この設定は |g:over_command_line_key_mappings| に反映されます。
 Example: >
 	OverCommandLineNoremap <A-b> <C-b>
 	OverCommandLineNoremap <A-f> <C-f>
 <
+
+:OverCommandLineMap {lhs} {rhs}			*:OverCommandLineMap*
+	|:OverCommandLineNoremap| と同等ですが再マップされます。
+
+:OverCommandLineUnmap {lhs}			*:OverCommandLineUnmap*
+	{lhs} に設定されているキーマッピングを削除します。
+	
 
 ==============================================================================
 設定						*over-setting*
