@@ -6,18 +6,22 @@ set cpo&vim
 let s:cache_command = {}
 function! s:doautocmd_user(prefix, command)
 	let group =  a:prefix . "-vital-over-commandline-doautocmd-dummy"
-	if !has_key(s:cache_command, a:command)
+	if !has_key(s:cache_command, a:prefix)
+		let s:cache_command[a:prefix] = {}
+	endif
+
+	if !has_key(s:cache_command[a:prefix], a:command)
 		execute "autocmd " . group
 \			. " User " . a:command." silent! execute ''"
 
 		if v:version > 703 || v:version == 703 && has("patch438")
-			let s:cache_command[a:command] = "doautocmd <nomodeline> User " . a:command
+			let s:cache_command[a:prefix][a:command] = "doautocmd <nomodeline> User " . a:command
 		else
-			let s:cache_command[a:command] = "doautocmd User " . a:command
+			let s:cache_command[a:prefix][a:command] = "doautocmd User " . a:command
 		endif
 	endif
 
-	execute s:cache_command[a:command]
+	execute s:cache_command[a:prefix][a:command]
 endfunction
 
 let s:hooks = [
@@ -62,6 +66,9 @@ endfor
 
 
 function! s:make(prefix)
+	if has_key(s:cache_command, a:prefix)
+		unlet! s:cache_command[a:prefix]
+	endif
 	execute "augroup " a:prefix . "-vital-over-commandline-doautocmd-dummy"
 		autocmd!
 	augroup END

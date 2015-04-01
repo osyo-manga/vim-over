@@ -35,3 +35,4 @@ Over.Commandline.Modules.Digraphs
 Over.Commandline.Modules.IgnoreRegexpBackwardWord
 Over.Input
 Over.Keymapping
+Over.Commandline.Modules.LiteralInsert
