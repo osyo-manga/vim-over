@@ -3,7 +3,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-
+let g:over#command_line#enable_import_commandline_map = get(g:, "over#command_line#enable_import_cmap", 1)
 
 function! over#command_line#load()
 	" dummy
@@ -26,6 +26,10 @@ call s:main.connect(s:cmdline().get_module("KeyMapping").make_emacs())
 call s:main.connect("BufferComplete")
 call s:main.connect("ExceptionMessage")
 " call s:main.connect("Paste")
+
+if g:over#command_line#enable_import_commandline_map == 0
+	call s:main.disconnect("KeyMapping_vim_cmdline_mapping")
+endif
 
 
 let g:over#command_line#paste_escape_chars = get(g:, "over#command_line#paste_escape_chars", '')

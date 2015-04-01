@@ -1,5 +1,5 @@
 over
-4724200
+5b28b65
 
 Over
 Over.Commandline
@@ -30,3 +30,9 @@ Over.Commandline.Modules.Redraw
 Over.Commandline.Modules.Scroll
 Over.Signals
 Over.String
+Over.Commandline.Modules.AsyncUpdate
+Over.Commandline.Modules.Digraphs
+Over.Commandline.Modules.IgnoreRegexpBackwardWord
+Over.Input
+Over.Keymapping
+Over.Commandline.Modules.LiteralInsert

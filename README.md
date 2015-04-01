@@ -1,4 +1,4 @@
-#over.vim 2.0
+#over.vim 3.0
 
 ##Screencapture
 ###Preview in the command line window
@@ -24,9 +24,23 @@
 
 ##Change log
 
+* 3.0
+ * Add digraph
+ * Add `<C-q>`
+ * Import cmap/cnoremap setting
+ * `<C-w>` by regexp
+ * Multi lhs by keymapping
+ * Support `<expr>` keymapping
+ * Refactoring
+
 * 2.0
  * Refactoring
  * Change cursor highlight
  * Add highlighting `:/` and `:%g/`
  * No input specital keys(e.g. `<BS>`, `<C->`)
+
+##Special Thanks
+
+* [@haya14busa](https://github.com/haya14busa)
+
 

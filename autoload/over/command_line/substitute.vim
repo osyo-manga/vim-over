@@ -11,6 +11,14 @@ let s:hl_mark_begin = '`os`'
 let s:hl_mark_center = '`om`'
 let s:hl_mark_end   = '`oe`'
 
+let g:over#command_line#substitute#highlight_pattern = get(g:, "over#command_line#substitute#highlight_pattern", "Search")
+
+if hlexists("Error")
+	let g:over#command_line#substitute#highlight_string = get(g:, "over#command_line#substitute#highlight_string", "Error")
+else
+	let g:over#command_line#substitute#highlight_string = get(g:, "over#command_line#substitute#highlight_string", "ErrorMsg")
+endif
+
 
 function! s:init()
 	if &modifiable == 0
@@ -144,7 +152,7 @@ function! s:substitute_preview(line)
 	endif
 
 	if empty(string)
-		silent! call add(s:matchlist, matchadd("Search", (&ignorecase ? '\c' : '') . pattern, 1))
+		silent! call add(s:matchlist, matchadd(g:over#command_line#substitute#highlight_pattern, (&ignorecase ? '\c' : '') . pattern, 1))
 		return
 	endif
 
@@ -164,8 +172,8 @@ function! s:substitute_preview(line)
 
 	let search_pattern = s:hl_mark_begin  . '\zs\_.\{-}\ze' . s:hl_mark_center
 	let error_pattern  = s:hl_mark_center . '\zs\_.\{-}\ze' . s:hl_mark_end
-	silent! call add(s:matchlist, matchadd("Search", search_pattern, 1))
-	silent! call add(s:matchlist, matchadd("Error",  error_pattern, 1))
+	silent! call add(s:matchlist, matchadd(g:over#command_line#substitute#highlight_pattern, search_pattern, 1))
+	silent! call add(s:matchlist, matchadd(g:over#command_line#substitute#highlight_string,  error_pattern, 1))
 endfunction
 
 

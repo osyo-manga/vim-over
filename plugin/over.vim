@@ -41,6 +41,11 @@ function! s:as_keymapping(key)
 	return result
 endfunction
 
+function! s:unmapping(key)
+	execute 'let key = "' . substitute(a:key, '\(<.\{-}>\)', '\\\1', 'g') . '"'
+	unlet g:over_command_line_key_mappings[key]
+endfunction
+
 command! -nargs=*
 \	OverCommandLineNoremap
 \	call call("s:key_mapping", map([<f-args>], "s:as_keymapping(v:val)") + [1])
@@ -48,6 +53,9 @@ command! -nargs=*
 command! -nargs=*
 \	OverCommandLineMap
 \	call call("s:key_mapping", map([<f-args>], "s:as_keymapping(v:val)") + [0])
+
+command! -nargs=*
+\	OverCommandLineUnmap call s:unmapping(<q-args>)
 
 
 let &cpo = s:save_cpo
