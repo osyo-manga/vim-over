@@ -139,6 +139,22 @@ Default: >
 	\}
 <
 
+			*g:over#command_line#substitute#highlight_pattern*
+g:over#command_line#substitute#highlight_pattern
+	|:substitute| の {pattern} をハイライトするグループ名です。
+
+Default: >
+	let g:over#command_line#substitute#highlight_pattern = "Search"
+<
+			*g:over#command_line#substitute#highlight_string*
+g:over#command_line#substitute#highlight_string
+	|:substitute| の {string} をハイライトするグループ名です。
+
+Default: >
+	let g:over#command_line#substitute#highlight_string = "Error"
+<
+
+
 
 ==============================================================================
 over のコマンドラインのハイライト		*over-command_line-highlight*
@@ -164,6 +180,9 @@ over のコマンドラインのキーマッピング	*over-command_line-key-map
 このキーマッピングは |g:over_command_line_key_map| で変更することが可能で
 す。
 また、|:cmap| |:cnoremap| で設定したキーマッピングも反映されます。
+|:cmap| |:cnoremap| よりも |g:over_command_line_key_map| 等で設定した
+キーマッピングが優先されることに注意してください。
+
 
 キー			処理~
 -----------		-------------------------------
@@ -184,8 +203,7 @@ over のコマンドラインのキーマッピング	*over-command_line-key-map
 <C-r><C-r>		カーソル下の WORD を挿入
 <Tab>			バッファ上のワードで補完を行う
 <C-r>{0-9a-z"%#:-.*=}	番号/名前付きレジスタの挿入 
-<C-v>			次に打ち込まれた非数字文字をその通りに挿入
-<C-q>			<C-v> と同等
+<C-q>			次に打ち込まれた非数字文字をその通りに挿入
 
 
 以下は特殊なマッピングです。
@@ -208,6 +226,7 @@ Example: >
     OverCommandLineNoremap <A-p> <Plug>(over-cmdline-substitute-jump-pattern)
 <
 
+
 ==============================================================================
 over のコマンドラインの autocmd			*over-command_line-autocmd*
 
@@ -225,14 +244,25 @@ OverCmdLineCancel	コマンドラインを実行しないで終了した時
 
 
 ==============================================================================
+FAQ						*over-command_line-faq*
+
+Q. <C-v> 時に特殊文字を挿入したい
+
+A. 次のマッピングを追加してください
+
+>
+	OverCommandLineMap <C-v> <C-q>
+<
+
+==============================================================================
 更新履歴						*over-changelog*
 
 3.0
-	- cmap/cnoremap の対応
+	- cmap/cnoremap の設定のインポート
 	- <C-w> 時に正規表現を考慮した単語を削除
 	- digraph の対応
-	- <C-v>,<C-q> の対応
-	- lhs に複数キーの割り当て
+	- <C-q> (<C-v> )機能の追加
+	- キーマッピング時の lhs に複数キーの割り当に対応
 	- <expr> の対応
 
 2.0

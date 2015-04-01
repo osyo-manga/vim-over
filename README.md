@@ -26,7 +26,7 @@
 
 * 3.0
  * Add digraph
- * Add `<C-v>`, `<C-q>`
+ * Add `<C-q>`
  * Import cmap/cnoremap setting
  * `<C-w>` by regexp
  * Multi lhs by keymapping
