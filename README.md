@@ -24,7 +24,7 @@
 
 ##Change log
 
-* 3.0
+* 3.0 (2015/04/01)
  * Add digraph
  * Add `<C-q>`
  * Import cmap/cnoremap setting
