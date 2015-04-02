@@ -24,6 +24,7 @@ function! s:doautocmd_user(prefix, command)
 	execute s:cache_command[a:prefix][a:command]
 endfunction
 
+
 let s:hooks = [
 \	"enter",
 \	"leave",
