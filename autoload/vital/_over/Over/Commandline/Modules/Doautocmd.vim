@@ -59,11 +59,17 @@ let s:module = {
 
 for s:i in range(len(s:hooks))
 	execute join([
-\		"function! s:module.on_" . s:hooks[s:i] . "(...)",
+\		"function! s:module.on_" . s:hooks[s:i] . "(cmdline, ...)",
+\		"	let s:cmdline = a:cmdline",
 \		"	call s:doautocmd_user(self.prefix, self.prefix . " . string(s:hooks_camel[s:i]) . ")",
 \		"endfunction",
 \	], "\n")
 endfor
+
+
+function! s:get_cmdline()
+	return s:cmdline
+endfunction
 
 
 function! s:make(prefix)
