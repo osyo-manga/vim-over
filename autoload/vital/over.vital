@@ -1,5 +1,5 @@
 over
-5b28b65
+e3250cf
 
 Over
 Over.Commandline
@@ -36,3 +36,4 @@ Over.Commandline.Modules.IgnoreRegexpBackwardWord
 Over.Input
 Over.Keymapping
 Over.Commandline.Modules.LiteralInsert
+Over.Exception
