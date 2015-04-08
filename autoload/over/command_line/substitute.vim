@@ -43,6 +43,7 @@ function! s:init()
 	let s:undo_file = tempname()
 	execute "wundo" s:undo_file
 	let s:finished = 0
+	let s:buffer_text = getline(1, "$")
 endfunction
 
 
@@ -67,7 +68,8 @@ endfunction
 
 function! s:undojoin()
 	if exists("s:undo_file")
-		call s:undo()
+" 		call s:undo()
+		call setline(1, s:buffer_text)
 		if filereadable(s:undo_file)
 			silent execute "rundo" s:undo_file
 		endif
