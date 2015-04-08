@@ -93,6 +93,13 @@ function! s:undo()
 endfunction
 
 
+function! s:matchadd(group, pat)
+	if hlID(a:group)
+		call add(s:matchlist, matchadd(a:group, a:pat, 1))
+	endif
+endfunction
+
+
 let s:matchlist = []
 function! s:reset_match()
 	for id in s:matchlist
@@ -152,7 +159,7 @@ function! s:substitute_preview(line)
 	endif
 
 	if empty(string)
-		silent! call add(s:matchlist, matchadd(g:over#command_line#substitute#highlight_pattern, (&ignorecase ? '\c' : '') . pattern, 1))
+		call s:matchadd(g:over#command_line#substitute#highlight_pattern, (&ignorecase ? '\c' : '') . pattern)
 		return
 	endif
 
@@ -170,10 +177,10 @@ function! s:substitute_preview(line)
 	let &l:concealcursor = "nvic"
 	let &l:conceallevel = 3
 
-	let search_pattern = s:hl_mark_begin  . '\zs\_.\{-}\ze' . s:hl_mark_center
-	let error_pattern  = s:hl_mark_center . '\zs\_.\{-}\ze' . s:hl_mark_end
-	silent! call add(s:matchlist, matchadd(g:over#command_line#substitute#highlight_pattern, search_pattern, 1))
-	silent! call add(s:matchlist, matchadd(g:over#command_line#substitute#highlight_string,  error_pattern, 1))
+	let pattern = s:hl_mark_begin  . '\zs\_.\{-}\ze' . s:hl_mark_center
+	let string  = s:hl_mark_center . '\zs\_.\{-}\ze' . s:hl_mark_end
+	call s:matchadd(g:over#command_line#substitute#highlight_pattern, pattern)
+	call s:matchadd(g:over#command_line#substitute#highlight_string, string)
 endfunction
 
 
@@ -206,6 +213,7 @@ augroup over-cmdline-substitute
 	autocmd User OverCmdLineExecutePre call s:finish()
 	autocmd User OverCmdLineLeave call s:finish()
 	autocmd User OverCmdLineException call s:finish()
+	autocmd User OverCmdLineException call s:undojoin()
 	autocmd User OverCmdLineCancel call s:undojoin()
 	autocmd User OverCmdLineChar call s:substitute_preview(over#command_line#getline())
 	autocmd user OverCmdLineCharPre call s:on_charpre()
