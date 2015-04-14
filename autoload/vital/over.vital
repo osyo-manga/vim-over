@@ -37,3 +37,5 @@ Over.Input
 Over.Keymapping
 Over.Commandline.Modules.LiteralInsert
 Over.Exception
+Unlocker.Rocker
+Unlocker.Rocker.Undotree

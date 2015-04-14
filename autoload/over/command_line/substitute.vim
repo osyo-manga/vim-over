@@ -7,6 +7,11 @@ function! over#command_line#substitute#load()
 endfunction
 
 
+let s:V = over#vital()
+let s:Rocker = s:V.import("Unlocker.Rocker")
+let s:Undo = s:V.import("Unlocker.Rocker.Undotree")
+
+
 let s:hl_mark_begin = '`os`'
 let s:hl_mark_center = '`om`'
 let s:hl_mark_end   = '`oe`'
@@ -25,12 +30,6 @@ function! s:init()
 		return
 	endif
 	let s:undo_flag = 0
-" 	let s:old_pos = getpos(".")
-	let s:old_scrolloff = &scrolloff
-	let &scrolloff = 0
-	let s:old_conceallevel = &l:conceallevel
-	let s:old_concealcursor = &l:concealcursor
-	let s:old_modified = &l:modified
 
 	let hl_f = "syntax match %s '%s' conceal containedin=.*"
 	execute printf(hl_f, "OverCmdLineSubstituteHiddenBegin", s:hl_mark_begin)
@@ -40,8 +39,21 @@ function! s:init()
 " 	syntax match OverCmdLineSubstituteHiddenMiddle '`om`' conceal containedin=ALL
 " 	syntax match OverCmdLineSubstituteHiddenEnd    '`oe`' conceal containedin=ALL
 	
-	let s:undo_file = tempname()
-	execute "wundo" s:undo_file
+" 	let s:undo_file = tempname()
+" 	execute "wundo" s:undo_file
+
+" 	let s:old_pos = getpos(".")
+
+	let s:locker = s:Rocker.lock(
+\		"&scrolloff",
+\		"&l:conceallevel",
+\		"&l:concealcursor",
+\		"&l:modified",
+\	)
+	let &scrolloff = 0
+
+	let s:undo_locker = s:Undo.make().lock()
+
 	let s:finished = 0
 " 	let s:buffer_text = getline(1, "$")
 endfunction
@@ -54,13 +66,8 @@ function! s:finish()
 	call s:reset_match()
 	let s:finished = 1
 " 	call setpos(".", s:old_pos)
-	let &scrolloff = s:old_scrolloff
-	let &l:conceallevel = s:old_conceallevel
-	let &l:concealcursor = s:old_concealcursor
-
-	echom s:old_modified
-	let &l:modified = s:old_modified
-
+	call s:locker.unlock()
+	
 " 	highlight link OverCmdLineSubstitute NONE
 " 	highlight link OverCmdLineSubstitutePattern NONE
 " 	highlight link OverCmdLineSubstituteString  NONE
@@ -68,13 +75,15 @@ endfunction
 
 
 function! s:undojoin()
-	if exists("s:undo_file")
+	if exists("s:undo_locker")
 		call s:undo()
 " 		call setline(1, s:buffer_text)
-		if filereadable(s:undo_file)
-			silent execute "rundo" s:undo_file
-		endif
-		unlet s:undo_file
+		call s:undo_locker.unlock()
+" 		if filereadable(s:undo_file)
+" 			silent execute "rundo" s:undo_file
+" 		endif
+		unlet s:undo_locker
+" 		unlet s:undo_file
 	endif
 endfunction
 
