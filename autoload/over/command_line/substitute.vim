@@ -13,7 +13,7 @@ let s:Undo = s:V.import("Unlocker.Rocker.Undotree")
 
 
 let s:hl_mark_begin = '`os`'
-let s:hl_mark_center = '`om`'
+let s:hl_mark_center = '`mc`'
 let s:hl_mark_end   = '`oe`'
 
 let g:over#command_line#substitute#highlight_pattern = get(g:, "over#command_line#substitute#highlight_pattern", "Search")
@@ -51,6 +51,7 @@ function! s:init()
 \		"&l:modified",
 \	)
 	let &scrolloff = 0
+	let s:old_modified = &l:modified
 
 	let s:undo_locker = s:Undo.make().lock()
 
@@ -107,7 +108,12 @@ endfunction
 
 function! s:matchadd(group, pat)
 	if hlID(a:group)
-		call add(s:matchlist, matchadd(a:group, a:pat, 1))
+		try
+			let id = matchadd(a:group, a:pat, 1)
+		catch
+			return
+		endtry
+		call add(s:matchlist, id)
 	endif
 endfunction
 
