@@ -113,7 +113,16 @@ endfunction
 call s:main.connect(s:module)
 
 
+let g:over#command_line#enable_Digraphs = get(g:, "over#command_line#enable_Digraphs", 1)
+
 function! over#command_line#start(prompt, input)
+	if g:over#command_line#enable_Digraphs
+\	&& empty(over#command_line#get().get_module("Digraphs"))
+		call over#command_line#get().connect("Digraphs")
+	else
+		call over#command_line#get().disconnect("Digraphs")
+	endif
+
 	if exists("*strchars") && has("conceal")
 		call s:main.set_prompt(a:prompt)
 		let exit_code = s:main.start(a:input)

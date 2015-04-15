@@ -158,7 +158,15 @@ g:over#command_line#substitute#highlight_string
 Default: >
 	let g:over#command_line#substitute#highlight_string = "Error"
 <
-
+					*g:over#command_line#enable_Digraphs*
+g:over#command_line#enable_Digraphs
+	0 が設定されている場合 |Digraphs| が無効になります。
+Default: >
+	le g:over#command_line#enable_Digraphs = 1
+<
+	NONE:|Digraphs| を有効にすると GUI 版の Vim で起動時にちらつく問題が
+	あるので、それを抑制したい場合はこの設定を利用してください。
+	https://github.com/osyo-manga/vital-over/issues
 
 
 ==============================================================================
@@ -258,6 +266,15 @@ A. 次のマッピングを追加してください
 >
 	OverCommandLineMap <C-v> <C-q>
 <
+
+Q. 起動時に画面がちらつかないようにしたい
+
+A. |g:over#command_line#enable_Digraphs| に 0 を設定して |Digraphs| を無効に
+してください。
+>
+	let g:over#command_line#enable_Digraphs = 0
+<
+
 
 ==============================================================================
 更新履歴						*over-changelog*
