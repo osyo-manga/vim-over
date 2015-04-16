@@ -267,14 +267,6 @@ A. 次のマッピングを追加してください
 	OverCommandLineMap <C-v> <C-q>
 <
 
-Q. 起動時に画面がちらつかないようにしたい
-
-A. |g:over#command_line#enable_Digraphs| に 0 を設定して |Digraphs| を無効に
-してください。
->
-	let g:over#command_line#enable_Digraphs = 0
-<
-
 
 ==============================================================================
 更新履歴						*over-changelog*
