@@ -33,7 +33,10 @@ endfunction
 
 function! s:obj.unlock()
 	call self.__undolevels.unlock()
-	call self.__undofile.unlock()
+	try
+		call self.__undofile.unlock()
+	catch /^Vim\%((\a\+)\)\=:E605/
+	endtry
 	return self
 endfunction
 
