@@ -3,14 +3,21 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-let s:sfile = expand("<sfile>:h")
-let s:_holders = map(split(globpath(s:sfile . "/Holder", "*"), "\n"), "fnamemodify(v:val, ':t:r')")
+function! s:_glob(expr, dir)
+	let cwd = getcwd()
+	try
+		execute "lcd" fnameescape(a:dir)
+		return filter(split(glob(a:expr), '\n'), "!isdirectory(v:val)")
+	finally
+		execute "lcd" fnameescape(cwd)
+	endtry
+endfunction
 
 
-let s:holder_files = filter(split(globpath(expand("<sfile>:h") . "/Holder", "**"), "\n"), "filereadable(v:val) && v:val =~ '\\.vim$'")
+let s:holder_files = s:_glob("Holder/**", expand("<sfile>:h"))
 
 function! s:_to_modulename(file)
-	let result = substitute(a:file, s:sfile . '[\\/]Holder[\\/]', '', 'g')
+	let result = substitute(a:file, '^Holder[\/]', '', 'g')
 	let result = fnamemodify(result, ':r')
 	let result = substitute(result, "/", ".", "g")
 	return result
