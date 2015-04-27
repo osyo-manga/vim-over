@@ -6,6 +6,8 @@ let s:globpath_third_arg = v:version > 702 || v:version == 702 && has('patch51')
 
 let s:loaded = {}
 
+" call vital#of("vital").unload()
+
 function! s:import(name, ...) abort
   let target = {}
   let functions = []
@@ -58,6 +60,9 @@ endfunction
 
 function! s:unload() abort
   let s:loaded = {}
+  let s:cache_sid = {}
+  let s:cache_import = {}
+  let s:cache_module_path = {}
 endfunction
 
 function! s:exists(name) abort
@@ -94,9 +99,16 @@ function! s:expand_modules(entry, all) abort
   return modules
 endfunction
 
+let s:cache_import = {}
 function! s:_import(name) abort
+	let key = a:name . "_"
+	if has_key(s:cache_import, key)
+		return s:cache_import[key]
+	endif
   if type(a:name) == type(0)
-    return s:_build_module(a:name)
+	  let s:cache_import[key] = s:_build_module(a:name)
+	  return s:cache_import[key]
+"     return s:_build_module(a:name)
   endif
   let path = s:_get_module_path(a:name)
   if path ==# ''
@@ -114,10 +126,17 @@ function! s:_import(name) abort
 
     let sid = s:_get_sid_by_script(path)
   endif
-  return s:_build_module(sid)
+  let s:cache_import[key] = s:_build_module(sid)
+  return s:cache_import[key]
+"   return s:_build_module(sid)
 endfunction
 
+let s:cache_module_path = {}
 function! s:_get_module_path(name) abort
+	let key = a:name . "_"
+	if has_key(s:cache_module_path, key)
+		return s:cache_module_path[key]
+	endif
   if s:_is_absolute_path(a:name) && filereadable(a:name)
     return a:name
   endif
@@ -131,16 +150,25 @@ function! s:_get_module_path(name) abort
 
   call filter(paths, 'filereadable(expand(v:val, 1))')
   let path = get(paths, 0, '')
-  return path !=# '' ? path : ''
+  let s:cache_module_path[key] = path !=# '' ? path : ''
+  return s:cache_module_path[key]
+"   return path !=# '' ? path : ''
 endfunction
 
+let s:cache_sid = {}
 function! s:_get_sid_by_script(path) abort
+	if has_key(s:cache_sid, a:path)
+		return s:cache_sid[a:path]
+	endif
+
   let path = s:_unify_path(a:path)
   for line in filter(split(s:_redir('scriptnames'), "\n"),
   \                  'stridx(v:val, s:self_version) > 0')
     let list = matchlist(line, '^\s*\(\d\+\):\s\+\(.\+\)\s*$')
     if !empty(list) && s:_unify_path(list[2]) ==# path
-      return list[1] - 0
+		let s:cache_sid[a:path] = list[1] - 0
+		return s:cache_sid[a:path]
+"       return list[1] - 0
     endif
   endfor
   return 0
