@@ -19,9 +19,10 @@ let s:holder_files = s:_glob("Holder/**", expand("<sfile>:h"))
 function! s:_to_modulename(file)
 	let result = substitute(a:file, '^Holder[\/]', '', 'g')
 	let result = fnamemodify(result, ':r')
-	let result = substitute(result, "/", ".", "g")
+	let result = substitute(result, '[\/]', ".", "g")
 	return result
 endfunction
+
 
 let s:holder_module_names = map(copy(s:holder_files), "s:_to_modulename(v:val)")
 
