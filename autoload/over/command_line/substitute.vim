@@ -167,7 +167,9 @@ function! s:substitute_preview(line)
 	endif
 
 " 	call s:undo()
-	call s:buffer.relock()
+	if s:buffer.__rockers[0].__old != getline(1, "$")
+		call s:buffer.relock()
+	endif
 
 	call s:reset_match()
 
