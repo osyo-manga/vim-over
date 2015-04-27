@@ -10,6 +10,7 @@ endfunction
 let s:V = over#vital()
 let s:Rocker = s:V.import("Unlocker.Rocker")
 let s:Undo = s:V.import("Unlocker.Rocker.Undotree")
+let s:Holder = s:V.import("Unlocker.Holder")
 
 
 let s:hl_mark_begin = '`os`'
@@ -44,6 +45,7 @@ function! s:init()
 
 " 	let s:old_pos = getpos(".")
 
+	let s:buffer = s:Rocker.lock(s:Holder.make("Buffer.Text", "%"))
 	let s:locker = s:Rocker.lock(
 \		"&scrolloff",
 \		"&l:conceallevel",
@@ -52,6 +54,7 @@ function! s:init()
 \	)
 	let &scrolloff = 0
 	let s:old_modified = &l:modified
+
 
 	let s:undo_locker = s:Undo.make().lock()
 
@@ -64,6 +67,7 @@ function! s:finish()
 	if &modifiable == 0 || s:finished
 		return
 	endif
+	call s:buffer.unlock()
 	call s:reset_match()
 	let s:finished = 1
 " 	call setpos(".", s:old_pos)
@@ -77,7 +81,8 @@ endfunction
 
 function! s:undojoin()
 	if exists("s:undo_locker")
-		call s:undo()
+" 		call s:undo()
+		call s:buffer.unlock()
 " 		call setline(1, s:buffer_text)
 		call s:undo_locker.unlock()
 " 		if filereadable(s:undo_file)
@@ -98,12 +103,12 @@ function! s:silent_undo()
 endfunction
 
 
-function! s:undo()
-	if s:undo_flag
-		call s:silent_undo()
-		let s:undo_flag = 0
-	endif
-endfunction
+" function! s:undo()
+" 	if s:undo_flag
+" 		call s:silent_undo()
+" 		let s:undo_flag = 0
+" 	endif
+" endfunction
 
 
 function! s:matchadd(group, pat)
@@ -161,7 +166,8 @@ function! s:substitute_preview(line)
 		return
 	endif
 
-	call s:undo()
+" 	call s:undo()
+	call s:buffer.relock()
 
 	call s:reset_match()
 
