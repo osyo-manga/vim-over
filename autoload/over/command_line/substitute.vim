@@ -9,7 +9,7 @@ endfunction
 
 let s:V = over#vital()
 let s:Rocker = s:V.import("Unlocker.Rocker")
-let s:Undo = s:V.import("Unlocker.Rocker.Undotree")
+" let s:Undo = s:V.import("Unlocker.Rocker.Undotree")
 
 
 let s:hl_mark_begin = '`os`'
@@ -49,11 +49,16 @@ function! s:init()
 \		"&l:conceallevel",
 \		"&l:concealcursor",
 \		"&l:modified",
+\		"&l:undolevels",
 \	)
 	let &scrolloff = 0
 	let s:old_modified = &l:modified
 
 	let s:undo_locker = s:Undo.make().lock()
+
+	" Workaround https://github.com/osyo-manga/vim-over/issues/43
+	" substitute use undo
+	setlocal undolevels=0
 
 	let s:finished = 0
 " 	let s:buffer_text = getline(1, "$")
@@ -80,6 +85,7 @@ function! s:undojoin()
 		call s:undo()
 " 		call setline(1, s:buffer_text)
 		call s:undo_locker.unlock()
+		Debug &l:undolevels
 " 		if filereadable(s:undo_file)
 " 			silent execute "rundo" s:undo_file
 " 		endif
