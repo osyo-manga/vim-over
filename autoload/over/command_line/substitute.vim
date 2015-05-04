@@ -85,7 +85,6 @@ function! s:undojoin()
 		call s:undo()
 " 		call setline(1, s:buffer_text)
 		call s:undo_locker.unlock()
-		Debug &l:undolevels
 " 		if filereadable(s:undo_file)
 " 			silent execute "rundo" s:undo_file
 " 		endif
