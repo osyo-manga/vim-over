@@ -9,7 +9,7 @@ endfunction
 
 let s:V = over#vital()
 let s:Rocker = s:V.import("Unlocker.Rocker")
-" let s:Undo = s:V.import("Unlocker.Rocker.Undotree")
+let s:Undo = s:V.import("Unlocker.Rocker.Undotree")
 
 
 let s:hl_mark_begin = '`os`'
