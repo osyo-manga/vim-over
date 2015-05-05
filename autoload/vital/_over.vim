@@ -103,7 +103,7 @@ let s:cache_import = {}
 function! s:_import(name) abort
 	let key = a:name . "_"
 	if has_key(s:cache_import, key)
-		return s:cache_import[key]
+" 		return s:cache_import[key]
 	endif
   if type(a:name) == type(0)
 	  let s:cache_import[key] = s:_build_module(a:name)

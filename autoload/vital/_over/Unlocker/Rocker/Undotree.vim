@@ -47,15 +47,12 @@ function! s:obj.relock()
 endfunction
 
 
-function! s:make(...)
-	let file = get(a:, 1, tempname())
+function! s:make()
 	let result = deepcopy(s:obj)
 	let result.__undolevels = s:Base.make(s:Option.make("&l:undolevels"))
-	let result.__undofile = s:Base.make(s:Undofile.make(file))
+	let result.__undofile = s:Base.make(s:Undofile.make())
 	return result
 endfunction
-
-
 
 
 let &cpo = s:save_cpo

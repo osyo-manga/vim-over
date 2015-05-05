@@ -473,7 +473,7 @@ function! s:base.__input(input, ...)
 	endif
 
 	call self.set_input_key_stack(s:String.split_by_keys(key))
-	while !(empty(self.input_key_stack()) || self.__is_exit())
+	while !(empty(self.input_key_stack()) || self.is_exit())
 		call self.__input_char(self.input_key_stack_pop())
 	endwhile
 endfunction
@@ -524,7 +524,7 @@ function! s:base.__update()
 	call self.callevent("on_update")
 	call self.__inputting()
 " 	call self.__input(s:Input.getchar())
-	if self.__is_exit()
+	if self.is_exit()
 		return -1
 	endif
 	call self.draw()
@@ -538,7 +538,7 @@ function! s:base.__main(...)
 
 		call self.__input(get(a:, 1, ""))
 		call self.draw()
-		while !self.__is_exit()
+		while !self.is_exit()
 			try
 				if self.__update()
 					break
@@ -564,6 +564,11 @@ endfunction
 
 
 function! s:base.__is_exit()
+	return self.is_exit()
+endfunction
+
+
+function! s:base.is_exit()
 	return self.variables.exit
 endfunction
 

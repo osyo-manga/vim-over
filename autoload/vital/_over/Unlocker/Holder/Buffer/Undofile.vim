@@ -5,8 +5,9 @@ let s:obj = {}
 
 
 function! s:obj.get()
-	execute "wundo!" self.__file
-	return self.__file
+	let file = get(a:, 1, tempname())
+	execute "wundo!" file
+	return file
 endfunction
 
 
@@ -25,9 +26,8 @@ function! s:is_makeable(rhs)
 endfunction
 
 
-function! s:make(...)
+function! s:make()
 	let result = deepcopy(s:obj)
-	let result.__file = get(a:, 1, tempname())
 	return result
 endfunction
 
