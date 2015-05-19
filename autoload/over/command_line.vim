@@ -9,6 +9,10 @@ function! over#command_line#load()
 	" dummy
 endfunction
 
+let s:V = over#vital()
+let s:Highlight = s:V.import("Coaster.Highlight")
+let s:Search = s:V.import("Coaster.Search")
+
 
 unlet! s:_cmdline
 function! s:cmdline()
@@ -208,6 +212,31 @@ endfunction
 function! over#command_line#get()
 	return s:main
 endfunction
+
+
+
+let s:module = {
+\	"name" : "HighlightVisualMode"
+\}
+
+function! s:module.on_enter(...)
+	if &selection == "exclusive"
+		let pat = '\%''<\|\%>''<.*\%<''>'
+	else
+		let pat = '\%''<\|\%>''<.*\%<''>\|\%''>'
+	endif
+
+	call s:Highlight.highlight("visualmode", "Visual", pat, 0)
+endfunction
+
+
+function! s:module.on_leave(...)
+	call s:Highlight.clear("visualmode")
+endfunction
+
+
+call s:main.connect(s:module)
+
 
 
 let &cpo = s:save_cpo
