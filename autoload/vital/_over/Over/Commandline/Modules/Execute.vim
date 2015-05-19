@@ -54,9 +54,24 @@ let s:search.prefix = "/"
 
 
 function! s:search.execute(cmdline)
+	call a:cmdline.callevent("on_execute_pre")
+	let input = a:cmdline.getline()
+	if input == ""
+		return
+	endif
 	call s:silent_feedkeys(":call histdel('/', -1)\<CR>", "remove_hist", "n")
-	let cmd = printf("call s:silent_feedkeys(\"%s%s\<CR>\", 'search', 'n')", self.prefix, a:cmdline.getline())
-	execute cmd
+	let cmd = printf("call s:silent_feedkeys(\"%s%s\<CR>\", 'search', 'n')", self.prefix, input)
+	try
+		execute cmd
+	catch
+		echohl ErrorMsg
+		echom matchstr(v:exception, 'Vim\((\w*)\)\?:\zs.*\ze')
+		echohl None
+		call a:cmdline.callevent("on_execute_failed")
+	finally
+		call a:cmdline.callevent("on_execute")
+	endtry
+
 " 	let cmd = printf("call search('%s')", a:cmdline.getline())
 " 	call a:cmdline.execute(cmd)
 " 	let @/ = a:cmdline.getline()

@@ -26,7 +26,7 @@ endfunction
 
 function! s:module.message(...)
 	echohl ErrorMsg
-	execute self.command string(self.prefix . self.throwpoint . " " . self.exception)
+	execute self.command string(self.prefix . " : " . self.throwpoint . " " . self.exception)
 	echohl None
 endfunction
 
@@ -41,7 +41,7 @@ endfunction
 
 function! s:make(...)
 	let result = deepcopy(s:module)
-	let result.prefix = get(a:, 1, "vital-over(".s:vname."):")
+	let result.prefix = get(a:, 1, "vital-over(".s:vname.") Exception")
 	let result.command = get(a:, 2, "echom")
 	return result
 endfunction

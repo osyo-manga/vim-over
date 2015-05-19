@@ -39,9 +39,27 @@ function! s:pattern_in_region_char(first, last, pattern)
 	else
 		return  printf('\%%%dl\%%(%s\M\)\%%>%dc', a:first[0], a:pattern, a:first[1]-1)
 \		. "\\|" . printf('\%%>%dl\%%(%s\M\)\%%<%dl', a:first[0], a:pattern, a:last[0])
-\		. >"\\|" . printf('\%%%dl\%%(%s\M\)\%%<%dc', a:last[0], a:pattern, a:last[1]+1)
+\		. "\\|" . printf('\%%%dl\%%(%s\M\)\%%<%dc', a:last[0], a:pattern, a:last[1]+1)
 	endif
 endfunction
+
+
+" function! s:pattern_in_region_char(first, last, pattern)
+" 	if a:first == a:last
+" 		return printf('\%%%dl\%%%dv', a:first[0], a:first[1])
+" 	elseif a:first[0] == a:last[0]
+" 		return printf('\%%%dl\%%>%dv\%%(%s\M\)\%%<%dv', a:first[0], a:first[1]-1, a:pattern, a:last[1]+1)
+" 	elseif a:last[0] - a:first[0] == 1
+" 		return  printf('\%%%dl\%%(%s\M\)\%%>%dv', a:first[0], a:pattern, a:first[1]-1)
+" \		. "\\|" . printf('\%%%dl\%%(%s\M\)\%%<%dv', a:last[0], a:pattern, a:last[1]+1)
+" 	else
+" 		return  printf('\%%%dl\%%(%s\M\)\%%>%dv', a:first[0], a:pattern, a:first[1]-1)
+" \		. "\\|" . printf('\%%>%dl\%%(%s\M\)\%%<%dl', a:first[0], a:pattern, a:last[0])
+" \		. "\\|" . printf('\%%%dl\%%(%s\M\)\%%<%dv', a:last[0], a:pattern, a:last[1]+1)
+" 	endif
+" endfunction
+
+
 
 
 function! s:pattern_in_region_line(first, last, pattern)

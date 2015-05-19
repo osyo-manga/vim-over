@@ -283,6 +283,9 @@ function! s:get_region_from_textobj(textobj)
 endfunction
 
 
+" ==================================================================
+
+
 function! s:get(bufnr)
 	return s:Object.make(a:bufnr)
 endfunction

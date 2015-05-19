@@ -11,7 +11,6 @@ endfunction
 
 let s:V = over#vital()
 let s:Highlight = s:V.import("Coaster.Highlight")
-let s:Search = s:V.import("Coaster.Search")
 
 
 unlet! s:_cmdline
