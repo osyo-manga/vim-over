@@ -12,9 +12,10 @@ let s:Rocker = s:V.import("Unlocker.Rocker")
 let s:Undo = s:V.import("Unlocker.Rocker.Undotree")
 
 
-let s:hl_mark_begin = '`os`'
-let s:hl_mark_center = '`mc`'
-let s:hl_mark_end   = '`oe`'
+let s:hl_mark_begin = ''
+let s:hl_mark_center = ''
+let s:hl_mark_end   = ''
+
 
 let g:over#command_line#substitute#highlight_pattern = get(g:, "over#command_line#substitute#highlight_pattern", "Search")
 
