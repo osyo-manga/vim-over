@@ -197,6 +197,10 @@ function! over#command_line#backward()
 endfunction
 
 
+function! over#command_line#bind_pattern_by_visual(pattern)
+    return '\%V' . a:pattern
+endfunction
+
 call over#command_line#substitute#load()
 call over#command_line#search#load()
 call over#command_line#global#load()
