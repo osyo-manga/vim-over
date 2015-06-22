@@ -105,7 +105,7 @@ endfunction
 
 
 function! s:undo()
-	if exists('s:undo_flag') && s:undo_flag
+	if get(s:, 'undo_flag', 0)
 		call s:silent_undo()
 		let s:undo_flag = 0
 	endif
