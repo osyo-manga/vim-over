@@ -13,15 +13,15 @@ endfunction
 
 
 function! s:search_hl_off()
-	if exists("s:search_id") && s:search_id != -1
+	if get(s:, "search_id", -1) != -1
 		call matchdelete(s:search_id)
 		unlet s:search_id
 	endif
-	if exists("s:current_search_id") && s:current_search_id != -1
+	if get(s:, "current_search_id", -1) != -1
 		call matchdelete(s:current_search_id)
 		unlet s:current_search_id
 	endif
-	if exists("s:cursor_search_id") && s:cursor_search_id != -1
+	if get(s:, "cursor_search_id", -1) != -1
 		call matchdelete(s:cursor_search_id)
 		unlet s:cursor_search_id
 	endif
@@ -68,9 +68,9 @@ function! s:main()
 		if g:over#command_line#search#enable_move_cursor
 			call setpos(".", s:old_pos)
 			if line =~ '^/.\+'
-				silent! call searchpos(s:pattern, "")
+				silent! call search(s:pattern, "")
 			else
-				silent! call searchpos(s:pattern, "b")
+				silent! call search(s:pattern, "b")
 			endif
 		endif
 	endif
