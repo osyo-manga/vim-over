@@ -197,6 +197,10 @@ function! over#command_line#backward()
 endfunction
 
 
+function! over#command_line#bind_pattern_by_visual(pattern)
+    return '\%V' . a:pattern
+endfunction
+
 call over#command_line#substitute#load()
 call over#command_line#search#load()
 call over#command_line#global#load()
@@ -218,7 +222,17 @@ let s:module = {
 \	"name" : "HighlightVisualMode"
 \}
 
-function! s:module.on_enter(...)
+function! s:module.on_draw_pre(cmdline)
+    if exists("self.visual_highlighted")
+        return
+    endif
+
+    let self.visual_highlighted = 1
+
+    if a:cmdline.getline()[0:4] != "'<,'>"
+        return
+    endif
+
 	if &selection == "exclusive"
 		let pat = '\%''<\|\%>''<.*\%<''>'
 	else
@@ -228,8 +242,8 @@ function! s:module.on_enter(...)
 	call s:Highlight.highlight("visualmode", "Visual", pat, 0)
 endfunction
 
-
 function! s:module.on_leave(...)
+    unlet self.visual_highlighted
 	call s:Highlight.clear("visualmode")
 endfunction
 

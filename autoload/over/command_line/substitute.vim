@@ -105,7 +105,7 @@ endfunction
 
 
 function! s:undo()
-	if s:undo_flag
+	if get(s:, 'undo_flag', 0)
 		call s:silent_undo()
 		let s:undo_flag = 0
 	endif
@@ -142,6 +142,7 @@ function! s:silent_substitute(range, pattern, string, flags)
 		let old_search = @/
 		let check = b:changedtick
 		silent execute printf('%ss/%s/%s/%s', a:range, a:pattern, a:string, flags)
+		nohlsearch
 		call histdel("search", -1)
 		let &l:modified = s:old_modified
 	catch /\v^Vim%(\(\a+\))=:(E121)|(E117)|(E110)|(E112)|(E113)|(E731)|(E475)|(E15)/
@@ -182,6 +183,12 @@ function! s:substitute_preview(line)
 		let pattern = @/
 	endif
 
+	if range == "'<,'>"
+		let pattern = over#command_line#bind_pattern_by_visual(
+			\ pattern
+		\ )
+	endif
+
 	if empty(string)
 		call s:matchadd(g:over#command_line#substitute#highlight_pattern, (&ignorecase ? '\c' : '') . pattern)
 		return
@@ -196,6 +203,7 @@ function! s:substitute_preview(line)
 	else
 		let string = s:hl_mark_begin . '\0' . s:hl_mark_center . string . s:hl_mark_end
 	endif
+
 	let s:undo_flag = s:silent_substitute(range, pattern, string, flags)
 
 	let &l:concealcursor = "nvic"

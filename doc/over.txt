@@ -45,6 +45,10 @@ COMMANDS                                                   *over-commands*
   
   {input} pre-feed the command line with the given input.
 
+:'<,'>OverCommandLine /{pattern}
+:'<,'>OverCommandLine ?{pattern}
+  Same as above, but apply search only to visually selected range.
+
 :OverCommandLineNoremap {lhs} {rhs}		 *:OverCommandLineNoremap*
   It is the same as :OverCommandLine but with a specified key remap.
   {lhs} will be substitued by {rhs}.
@@ -124,6 +128,8 @@ Default: >
     \	"\r" : '\\r',
     \}
 <
+g:over#command_line#keep_search  	*g:over#command_line#keep_search*
+  Populate @/ after searching or substitute through OverCommandLine.
 
 
 ==============================================================================

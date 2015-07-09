@@ -71,6 +71,9 @@ function! s:parse_substitute(word)
 	if type(result) == type(0) || empty(result)
 		return []
 	endif
+	if result[0] == '/' || result[0] == '?'
+		return []
+	endif
 	unlet result[1]
 	return result
 endfunction
