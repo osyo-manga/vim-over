@@ -134,8 +134,8 @@ function! over#command_line#start(prompt, input)
 		endif
 	else
 		echohl ErrorMsg
-		echo "Vim 7.3 or above."
-		echo "Need strchars() and +conceal."
+		echo "Vim 7.3 or above and +conceal."
+		echo "Need strchars()."
 		echohl NONE
 	endif
 endfunction
