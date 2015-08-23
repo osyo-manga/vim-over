@@ -118,12 +118,20 @@ call s:main.connect(s:module)
 
 let g:over#command_line#enable_Digraphs = get(g:, "over#command_line#enable_Digraphs", 1)
 
-function! over#command_line#start(prompt, input)
+function! over#command_line#start(prompt, input, ...)
+	let context = get(a:, 1, {})
+
 	if g:over#command_line#enable_Digraphs
 \	&& empty(over#command_line#get().get_module("Digraphs"))
 		call over#command_line#get().connect("Digraphs")
 	else
 		call over#command_line#get().disconnect("Digraphs")
+	endif
+
+	if get(context, "line1", 1) != get(context, "line2", 1)
+		call s:main.connect(s:hl_visualmode)
+	else
+		call s:main.disconnect("HighlightVisualMode")
 	endif
 
 	if exists("*strchars") && has("conceal")
@@ -214,11 +222,11 @@ endfunction
 
 
 
-let s:module = {
+let s:hl_visualmode = {
 \	"name" : "HighlightVisualMode"
 \}
 
-function! s:module.on_enter(...)
+function! s:hl_visualmode.on_enter(...)
 	if &selection == "exclusive"
 		let pat = '\%''<\|\%>''<.*\%<''>'
 	else
@@ -229,12 +237,9 @@ function! s:module.on_enter(...)
 endfunction
 
 
-function! s:module.on_leave(...)
+function! s:hl_visualmode.on_leave(...)
 	call s:Highlight.clear("visualmode")
 endfunction
-
-
-call s:main.connect(s:module)
 
 
 

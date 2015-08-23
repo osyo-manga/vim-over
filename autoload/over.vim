@@ -160,8 +160,9 @@ function! over#unsetup()
 endfunction
 
 
-function! over#command_line(prompt, input)
-	return over#command_line#start(a:prompt, a:input)
+function! over#command_line(prompt, input, ...)
+	let context = get(a:, 1, {})
+	return over#command_line#start(a:prompt, a:input, context)
 endfunction
 
 

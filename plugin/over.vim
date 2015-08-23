@@ -25,8 +25,9 @@ command! -range -nargs=*
 \	OverCommandLine
 \	call over#command_line(
 \		g:over_command_line_prompt,
-\		<line1> != <line2> ? printf("'<,'>%s", <q-args>) : <q-args>
-\)
+\		<line1> != <line2> ? printf("'<,'>%s", <q-args>) : <q-args>,
+\		{ "line1" : <line1>, "line2" : <line2> }
+\	)
 
 
 function! s:key_mapping(lhs, rhs, noremap)
