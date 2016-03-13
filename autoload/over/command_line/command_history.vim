@@ -8,7 +8,7 @@ endfunction
 
 
 function! s:command_histories()
-	return map(range(&history), 'histget(":", v:val * -1)')
+	return map(range(1, &history), 'histget(":", v:val * -1)')
 endfunction
 
 
