@@ -132,11 +132,11 @@ HIGHLIGHT SETTINGS                            *over-command_line-highlight*
 |:highlight| color settings are used by |over.vim|.
 
 OverCommandLineCursor                               *OverCommandLineCursor*
-  This is the highligh color of the current cursor position.
+  This is the highlight color of the current cursor position.
   The default value is |hl-Cursor|. 
 
 OverCommandLineCursorInsert                   *OverCommandLineCursorInsert*
-  This is the highligh color of the current cursor position in insert mode.
+  This is the highlight color of the current cursor position in insert mode.
   The default value is |hl-Cursor| with |underline| set.
 
 
