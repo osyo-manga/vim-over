@@ -3,7 +3,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-let g:over#command_line#enable_import_commandline_map = get(g:, "over#command_line#enable_import_cmap", 1)
+let g:over#command_line#enable_import_commandline_map = get(g:, "over#command_line#enable_import_commandline_map", 1)
 
 function! over#command_line#load()
 	" dummy
@@ -11,6 +11,7 @@ endfunction
 
 let s:V = over#vital()
 let s:Highlight = s:V.import("Coaster.Highlight")
+let s:Modules   = s:V.import("Over.Commandline.Modules")
 
 
 unlet! s:_cmdline
@@ -30,9 +31,6 @@ call s:main.connect("BufferComplete")
 call s:main.connect("ExceptionMessage")
 " call s:main.connect("Paste")
 
-if g:over#command_line#enable_import_commandline_map == 0
-	call s:main.disconnect("KeyMapping_vim_cmdline_mapping")
-endif
 
 
 let g:over#command_line#paste_escape_chars = get(g:, "over#command_line#paste_escape_chars", '')
@@ -126,6 +124,12 @@ function! over#command_line#start(prompt, input, ...)
 		call over#command_line#get().connect("Digraphs")
 	else
 		call over#command_line#get().disconnect("Digraphs")
+	endif
+
+	if g:over#command_line#enable_import_commandline_map == 0
+		call s:main.disconnect("KeyMapping_vim_cmdline_mapping")
+	else
+		call s:main.connect(s:Modules.get("KeyMapping").make_vim_cmdline_mapping())
 	endif
 
 	if get(context, "line1", 1) != get(context, "line2", 1)

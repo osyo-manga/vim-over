@@ -168,6 +168,13 @@ Default: >
 	あるので、それを抑制したい場合はこの設定を利用してください。
 	https://github.com/osyo-manga/vital-over/issues
 
+			*g:over#command_line#enable_import_commandline_map*
+g:over#command_line#enable_import_commandline_map
+	0 が設定されている場合、|:cmap| |:cnoremap| の設定が反映されなくな
+	ります。
+	|:cmap| |:cnoremap| の設定が競合してしまう場合は 0 を設定してく
+	ださい。
+
 
 ==============================================================================
 over のコマンドラインのハイライト		*over-command_line-highlight*
