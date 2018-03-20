@@ -18,7 +18,7 @@ function! over#vital()
 	if g:over#debug_vital_over
 		let s:V = vital#of("vital")
 	else
-		let s:V = vital#of("over")
+		let s:V = vital#over#new()
 	endif
 	return s:V
 endfunction
