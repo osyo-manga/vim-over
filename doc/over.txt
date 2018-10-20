@@ -124,6 +124,26 @@ Default: >
     \	"\r" : '\\r',
     \}
 <
+g:over#command_line#substitute#replace_pattern_visually
+*g:over#command_line#substitute#replace_pattern_visually*
+  Instead of previewing the replacement next to the replaced pattern, it
+  visually replaces the pattern instead.
+Default:
+  Not enabled. To enable, set it to 1.
+Example: >
+  The wolf jumps over the sheep.
+       /\
+       || --- You want to replace 'wolf' with 'bear'.
+
+  The [wolf][bear] jumps over the sheep.
+       /\
+       || --- Here is how vim-over will show you the preview normally.
+
+  The [bear] jumps over the sheep.
+       /\
+       || --- Here is how vim-over will show you the preview with this
+              option enabled.
+<
 
 
 ==============================================================================
