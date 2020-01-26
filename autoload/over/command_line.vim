@@ -4,6 +4,7 @@ set cpo&vim
 
 
 let g:over#command_line#enable_import_commandline_map = get(g:, "over#command_line#enable_import_commandline_map", 1)
+let g:over#command_line#substitute#replace_pattern_visually = get(g:, "over#command_line#substitute#replace_pattern_visually", 0)
 
 function! over#command_line#load()
 	" dummy
