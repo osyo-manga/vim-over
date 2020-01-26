@@ -93,15 +93,13 @@ endfunction
 
 function! s:search_highlight(line)
 	let result = s:parse_substitute(a:line)
-	if empty(result)
-		return
-	endif
+	let text = get(result, 1, "")
 	if !s:set_flag
 		let s:search_highlighted = 1
 		let s:set_flag = 1
-" 		call feedkeys("\<C-o>:set hlsearch | set incsearch\<CR>", 'n')
+		call feedkeys("\<C-o>:set hlsearch | set incsearch\<CR>", 'n')
 	endif
-	let @/ = result[1]
+	let @/ = text
 endfunction
 
 
